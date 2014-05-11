@@ -1343,12 +1343,12 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
 
     /** 
      * Creates a new document.
-     * @param {Number} [width] Document width.
-     * @param {Number} [height] Document height.
+     * @param {Number, UnitValue} width Document width.
+     * @param {Number, UnitValue} height Document height.
      * @param {Number} [resolution=72] Document resolution.
      * @param {String} [name] Document name.
      * @param {NewDocumentMode} [mode=NewDocumentMode.RGB] Document color mode.
-     * @param {DocumentFill} [initialFill=DocumentFill.WHITE] Document initial fill.
+     * @param {DocumentFill, SolidColor} [initialFill=DocumentFill.WHITE] Document initial fill or a valid solid color.
      * @param {Number} [pixelAspectRatio=1.0] Document aspect ratio.
      * @param {BitsPerChannelType} [bitsPerChannel=BitsPerChannelType.EIGHT] Document channel depth.
      * @param {String} [colorProfileName] Document color profile.
@@ -1356,7 +1356,80 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
      */
     documents.add = function (width, height, resolution, name, mode, initialFill, pixelAspectRatio, bitsPerChannel, colorProfileName)
     {
-        app.documents.add(width, height, resolution, name, mode, initialFill, pixelAspectRatio, bitsPerChannel, colorProfileName);
+        // Parse parameters
+        var desc = new ActionDescriptor();
+
+        // Mode
+        switch (mode)
+        {
+            case NewDocumentMode.GRAYSCALE: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('Grys')); break;
+            case NewDocumentMode.CMYK: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('CMYM')); break;
+            case NewDocumentMode.LAB: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('LbCM')); break;
+            case NewDocumentMode.BITMAP: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('BtmM')); break;
+            default: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('RGBM')); break; // Default to NewDocumentMode.RGB
+        }
+
+        // Name
+        if (typeof name === 'string' && name.length)
+            desc.putString(charIDToTypeID('Nm  '), name);
+
+        // Width
+        if ((typeof width !== 'number' || width < 0) && !(width instanceof UnitValue))
+            throw new Error('Invalid width: ' + width);
+        desc.putUnitDouble(charIDToTypeID('Wdth'), charIDToTypeID('#Rlt'), (width instanceof UnitValue) ? width.value : width);
+
+        // Height
+        if ((typeof height !== 'number' || height < 0) && !(height instanceof UnitValue))
+            throw new Error('Invalid height: ' + height);
+        desc.putUnitDouble(charIDToTypeID('Hght'), charIDToTypeID('#Rlt'), (height instanceof UnitValue) ? height.value : height);
+
+        // Resolution
+        desc.putUnitDouble(charIDToTypeID('Rslt'), charIDToTypeID('#Rsl'), (typeof resolution === 'number' && resolution > 0) ? resolution : 72);
+
+        // Pixel aspect ratio
+        desc.putDouble(stringIDToTypeID('pixelScaleFactor'), (typeof pixelAspectRatio === 'number' && pixelAspectRatio > 0) ? pixelAspectRatio : 1);
+
+        // Initial fill
+        initialFill || (initialFill = DocumentFill.WHITE);
+
+        if (initialFill instanceof SolidColor)
+        {
+            // SolidColor
+            desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Clr '));
+            var desc3 = new ActionDescriptor();
+            desc3.putUnitDouble(charIDToTypeID('H   '), charIDToTypeID('#Ang'), initialFill.hsb.hue);
+            desc3.putDouble(charIDToTypeID('Strt'), initialFill.hsb.saturation);
+            desc3.putDouble(charIDToTypeID('Brgh'), initialFill.hsb.brightness);
+            desc.putObject(charIDToTypeID('FlCl'), charIDToTypeID('HSBC'), desc3);
+        }
+        else
+        {
+            // DocumentFill
+            switch (initialFill)
+            {
+                case DocumentFill.TRANSPARENT: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Trns')); break;
+                case DocumentFill.BACKGROUNDCOLOR: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('BckC')); break;
+                default: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Wht ')); break; // Default to DocumentFill.WHITE
+            }
+        }
+
+        // Color depth
+        switch (bitsPerChannel)
+        {
+            case BitsPerChannelType.ONE: desc.putInteger(charIDToTypeID('Dpth'), 1); break;
+            case BitsPerChannelType.SIXTEEN: desc.putInteger(charIDToTypeID('Dpth'), 16); break;
+            case BitsPerChannelType.THIRTYTWO: desc.putInteger(charIDToTypeID('Dpth'), 32); break;
+            default: desc.putInteger(charIDToTypeID('Dpth'), 8); break; // Default to BitsPerChannelType.EIGHT
+        }
+
+        // Color profile
+        if (typeof colorProfileName === 'string' && colorProfileName.length)
+            desc.putString(stringIDToTypeID('profile'), colorProfileName);
+
+        // Create new document
+        var desc2 = new ActionDescriptor();
+        desc2.putObject(charIDToTypeID('Nw  '), charIDToTypeID('Dcmn'), desc);
+        executeAction(charIDToTypeID('Mk  '), desc2, _dialogModesNo);
         return documents;
     };
 

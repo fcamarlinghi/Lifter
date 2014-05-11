@@ -2024,13 +2024,14 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
      * Applies the specified layer into another one.
      * @param {Number} [sourceDocumentId] Source document identifier, defaults to currently active document if null.
      * @param {Number} [sourceLayerId] Source layer identifier, defaults to currently active layer if null.
-     * @param {ApplyImageChannel} [sourceLayerId] Source channel identifier, defaults to RGB if null.
-     * @param {Boolean} [sourceLayerId] Source channel identifier, defaults to RGB if null.
-     * @param {Number} [documentId] Identifier of the document to copy the specified layer into. Defaults
-     *                              to current document if null or not specified.
+     * @param {ApplyImageChannel} [sourceLayerId=ApplyImageChannel.RGB] Source channel identifier.
+     * @param {Boolean} [invert=false] Whether to invert the applied image.
+     * @param {BlendMode, LifterBlendMode} [blendMode=LifterBlendMode.NORMAL] Blend mode.
+     * @param {Number} [opacity=100] Blend opacity.
+     * @param {Boolean} [preserveTransparency=true] Whether to preserve the transparency of the applied image.
      * @return Chained reference to layer utilities.
      */
-    layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity)
+    layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity, preserveTransparency)
     {
         if (!Lifter.documents)
             throw new Error('Lifter.layers.applyImage requires the Lifter.documents library.');
@@ -2062,8 +2063,9 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
         (blendMode && blendMode.valueOf) || (blendMode = LifterBlendMode.NORMAL);
         blendMode = _ensureLifterBlendMode(blendMode);
 
-        // Opacity
+        // Opacity and transparency
         opacity = +opacity || 100.0;
+        typeof preserveTransparency === 'boolean' || (preserveTransparency = true);
 
         // Apply image
         // Source
@@ -2094,7 +2096,7 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
         desc2.putReference(charIDToTypeID('T   '), ref);
         desc2.putEnumerated(charIDToTypeID('Clcl'), charIDToTypeID('Clcn'), blendMode.valueOf());
         desc2.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
-        desc2.putBoolean(charIDToTypeID('PrsT'), true);
+        desc2.putBoolean(charIDToTypeID('PrsT'), preserveTransparency);
         desc2.putBoolean(charIDToTypeID('Invr'), invert);
 
         var desc = new ActionDescriptor();
@@ -2117,6 +2119,50 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
         executeAction(charIDToTypeID('Invr'), undefined, _dialogModesNo);
         return layers;
     }
+
+    /**
+     * Applies the specified layer into another one.
+     * @param {Number} [layerId] Layer identifier, defaults to currently active layer if null.
+     * @param {SolidColor} [fillColor] Fill color, defaults to background color if null.
+     * @param {BlendMode, LifterBlendMode} [blendMode=LifterBlendMode.NORMAL] Blend mode.
+     * @param {Number} [opacity=100] Blend opacity.
+     * @return Chained reference to layer utilities.
+     */
+    layers.fill = function (layerId, fillColor, blendMode, opacity)
+    {
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
+
+        // Color
+        (fillColor) || (fillColor = app.backgroundColor);
+
+        if (!(fillColor instanceof SolidColor))
+            throw new Error('Fill color must be a valid SolidColor: ' + fillColor);
+
+        // Blend mode
+        (blendMode && blendMode.valueOf) || (blendMode = LifterBlendMode.NORMAL);
+        blendMode = _ensureLifterBlendMode(blendMode);
+
+        // Opacity
+        opacity = +opacity || 100.0;
+
+        // Apply fill
+        var desc = new ActionDescriptor();
+        desc.putEnumerated(charIDToTypeID('Usng'), charIDToTypeID('FlCn'), charIDToTypeID('Clr '));
+
+        var desc2 = new ActionDescriptor();
+        desc2.putUnitDouble(charIDToTypeID('H   '), charIDToTypeID('#Ang'), fillColor.hsb.hue);
+        desc2.putDouble(charIDToTypeID('Strt'), fillColor.hsb.saturation);
+        desc2.putDouble(charIDToTypeID('Brgh'), fillColor.hsb.brightness);
+        desc.putObject(charIDToTypeID('Clr '), charIDToTypeID('HSBC'), desc2);
+
+        desc.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
+        desc.putEnumerated(charIDToTypeID('Md  '), charIDToTypeID('BlnM'), blendMode.valueOf());
+
+        executeAction(charIDToTypeID('Fl  '), desc, _dialogModesNo);
+
+        return layers;
+    };
 
     /**
      * Iterates over all layers contained in the current document, executing the specified callback on each element.
