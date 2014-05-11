@@ -40,7 +40,7 @@ module.exports = function (grunt)
 
             // Custom build support
             // Just uncomment the following line and add the modules to the array
-            custom: [].concat(header, core, 'src/modules/documents.js', 'src/modules/filters.js', 'src/modules/layers.js', footer),
+            custom: [].concat(header, core, 'src/modules/documents.js', 'src/modules/layers.js', footer),
         },
 
         // Grunt config

@@ -295,6 +295,24 @@ LifterBlendMode.fromBlendMode = function (blendMode) { return LifterBlendMode[St
 /** Converts the passed LifterBlendMode to a BlendMode. */
 LifterBlendMode.toBlendMode = function (lifterBlendMode) { return eval(lifterBlendMode.toString().replace(/LifterBlendMode/, 'BlendMode')); /* HACKY!! */ };
 
+/** Ensures the passed blendMode is expressed using the LifterBlendMode enumeration. @private */
+function _ensureLifterBlendMode(blendMode)
+{
+    if (blendMode instanceof Enumerator)
+        return blendMode;
+    else
+        return LifterBlendMode.fromBlendMode(blendMode);
+}
+
+/**
+ * Enumerates apply image source channels.
+ */
+var ApplyImageChannel = this.ApplyImageChannel = function ApplyImageChannel() { };
+ApplyImageChannel.RGB = new Enumerator('ApplyImageChannel.RGB', charIDToTypeID('RGB '));
+ApplyImageChannel.Red = new Enumerator('ApplyImageChannel.Red', charIDToTypeID('Rd  '));
+ApplyImageChannel.Green = new Enumerator('ApplyImageChannel.Green', charIDToTypeID('Grn '));
+ApplyImageChannel.Blue = new Enumerator('ApplyImageChannel.Blue', charIDToTypeID('Bl  '));
+
 
 // Global utilities
 /** Cached reference to DialogModes.NO. */

@@ -30,22 +30,14 @@
         charIDToTypeID('Dtn '), // Duotone
     ];
 
-    /** Sets the passed document as active, executes the specified callback and resets active document to the old one. @private */
-    function _wrapSwitchActive(documentId, callback)
+    /** Sets the passed document as active and executes the specified callback. @private */
+    function _wrapSwitchActive(documentId, callback, context)
     {
-        // Store currently active document
-        var oldDocumentId = documents.prop('documentId');
-
         // Set active layer to documentId
-        if (documentId && oldDocumentId !== documentId)
-            documents.list.makeActive(documentId);
+        documents.list.makeActive(documentId);
 
         // Execute code
-        callback.call(null);
-
-        // Set active document back to original
-        if (documentId && oldDocumentId !== documentId)
-            documents.list.makeActive(oldLayerId);
+        callback.call(context);
     };
 
     /** Puts the correct value in 'ref' to the get the document specified by DocumentId. @private */

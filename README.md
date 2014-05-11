@@ -30,25 +30,21 @@ Lifter.layers.forEach(function (itemIndex, layerId)
 {
     type = Lifter.layers.prop(layerId, 'type');
 
-    // Parsed backwards (DOM style)
     switch (type)
     {
         case LayerType.SETSTART:
             if (nested === 1)
-                layers[layers.length - 1].name = Lifter.layers.prop(layerId, 'name');
+                layers.push({ id: layerId, name: Lifter.layers.prop(layerId, 'name'), type: 'folder' });
 
             nested--;
             break;
 
         case LayerType.CONTENT:
             if (nested === 0)
-                layers.push({ id: layerId, name: '' });
+                layers.push({ id: layerId, name: Lifter.layers.prop(layerId, 'name'), type: 'layer' });
             break;
 
         case LayerType.SETEND:
-            if (nested === 0)
-                layers.push({ id: layerId, name: '' });
-
             nested++;
             break;
     }

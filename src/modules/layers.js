@@ -29,31 +29,15 @@
     /** Utility object used to temporary hold data during heavy operations. @private */
     var _cache = {};
 
-    /** Ensures the passed blendMode is expressed using the LifterBlendMode enumeration. @private */
-    function _ensureLifterBlendMode(blendMode)
+    /** Sets the passed layer as active and executes the specified callback. @private */
+    function _wrapSwitchActive(layerId, callback, context)
     {
-        if (blendMode instanceof Enumerator)
-            return blendMode;
-        else
-            return LifterBlendMode.fromBlendMode(blendMode);
-    }
-
-    /** Sets the passed layer as active, executes the specified callback and resets active layer to the old one. @private */
-    function _wrapSwitchActive(layerId, callback)
-    {
-        // Store currently active layer
-        var oldLayerId = layers.prop('layerId');
-
         // Set active layer to layerId
-        if (layerId && oldLayerId !== layerId)
+        if (layers.prop('layerId') !== layerId)
             layers.stack.makeActive(layerId);
 
         // Execute code
-        callback.call(null);
-
-        // Set active layer back to original
-        if (layerId && oldLayerId !== layerId)
-            layers.stack.makeActive(oldLayerId);
+        callback.call(context);
     };
 
     /** Gets a ActionDescriptor holding all the properties needed for the Make Layer action. @private */
@@ -945,7 +929,9 @@
      */
     layers.convertToSmartObject = function (layerId)
     {
-        layers.stack.makeActive(layerId);
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
+
         executeAction(stringIDToTypeID('newPlacedLayer'), undefined, _dialogModesNo);
         return layers;
     };
@@ -978,6 +964,104 @@
         // Chaining
         return layers;
     };
+
+    /**
+     * Applies the specified layer into another one.
+     * @param {Number} [sourceDocumentId] Source document identifier, defaults to currently active document if null.
+     * @param {Number} [sourceLayerId] Source layer identifier, defaults to currently active layer if null.
+     * @param {ApplyImageChannel} [sourceLayerId] Source channel identifier, defaults to RGB if null.
+     * @param {Boolean} [sourceLayerId] Source channel identifier, defaults to RGB if null.
+     * @param {Number} [documentId] Identifier of the document to copy the specified layer into. Defaults
+     *                              to current document if null or not specified.
+     * @return Chained reference to layer utilities.
+     */
+    layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity)
+    {
+        if (!Lifter.documents)
+            throw new Error('Lifter.layers.applyImage requires the Lifter.documents library.');
+
+        // Validate parameters
+        // Source document
+        if (typeof sourceDocumentId !== 'number')
+            sourceDocumentId = Lifter.documents.getActiveDocumentId();
+
+        // Source layer
+        if (sourceLayerId !== 'merged' && typeof sourceLayerId !== 'number')
+            sourceLayerId = layers.stack.getActiveLayerId();
+
+        // Source channel
+        if (sourceChannel)
+        {
+            if (!Enumeration.contains(ApplyImageChannel, sourceChannel))
+                throw new TypeError('Invalid sourceChannel:' + sourceChannel);
+        }
+        else
+        {
+            sourceChannel = ApplyImageChannel.RGB;
+        }
+
+        // Invert
+        typeof invert === 'boolean' || (invert = false);
+
+        // Blend mode
+        (blendMode && blendMode.valueOf) || (blendMode = LifterBlendMode.NORMAL);
+        blendMode = _ensureLifterBlendMode(blendMode);
+
+        // Opacity
+        opacity = +opacity || 100.0;
+
+        // Apply image
+        // Source
+        var ref = new ActionReference();
+        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), sourceChannel.valueOf());
+
+        if (sourceLayerId === 'merged')
+        {
+            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Mrgd'));
+        }
+        else
+        {
+            // Check source document for background layer
+            var activeDocId = Lifter.documents.getActiveDocumentId();
+            Lifter.documents.makeActive(sourceDocId);
+
+            if (layers.prop('isBackgroundLayer'))
+                ref.putProperty(charIDToTypeID('Lyr '), charIDToTypeID('Bckg'));
+            else
+                ref.putIdentifier(charIDToTypeID('Lyr '), sourceLayerId);
+
+            Lifter.documents.makeActive(activeDocId);
+        }
+
+        ref.putIdentifier(charIDToTypeID('Dcmn'), sourceDocumentId);
+
+        var desc2 = new ActionDescriptor();
+        desc2.putReference(charIDToTypeID('T   '), ref);
+        desc2.putEnumerated(charIDToTypeID('Clcl'), charIDToTypeID('Clcn'), blendMode.valueOf());
+        desc2.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
+        desc2.putBoolean(charIDToTypeID('PrsT'), true);
+        desc2.putBoolean(charIDToTypeID('Invr'), invert);
+
+        var desc = new ActionDescriptor();
+        desc.putObject(charIDToTypeID('With'), charIDToTypeID('Clcl'), desc2);
+
+        executeAction(charIDToTypeID('AppI'), desc, _dialogModesNo);
+        return layers;
+    };
+
+    /**
+     * Inverts the specified layer.
+     * @param {Number} [layerId] Layer identifier, defaults to currently active layer if null or not specified.
+     * @return Chained reference to layer utilities.
+     */
+    layers.invert = function (layerId)
+    {
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
+
+        executeAction(charIDToTypeID('Invr'), undefined, _dialogModesNo);
+        return layers;
+    }
 
     /**
      * Iterates over all layers contained in the current document, executing the specified callback on each element.
@@ -1034,9 +1118,9 @@
     /**
      * Gets or sets the property with the given name on the specified layer. If invoked with no arguments
      * gets a wrapped ActionDescriptor containing all the properties of the specified layer.
-     * @param {Number} [documentId] Layer identifier, defaults to currently active document if null or not specified.
+     * @param {Number} [layerId] Layer identifier, defaults to currently active document if null or not specified.
      * @param {String} [name] Property name.
-     * @param {Any} [value]Property value.
+     * @param {Any} [value] Property value.
      * @return {Any, ActionDescriptor, Object}  Property value when getting a property, a wrapped ActionDescriptor when invoked with no arguments
      *                                          or a chained reference to document utilities when setting a property.
      */
@@ -1181,27 +1265,16 @@
 
     /**
      * Sets the currently active layer to the one identified by the passed LayerId.
-     * @param {Number} [layerId] Layer identifier, defaults to currently active layer if null or not specified.
+     * @param {Number} layerId Layer identifier.
      * @param {Boolean} [makeVisible] Whether to make the layer RGB channels visible.
      * @return Chained reference to layer utilities.
      */
-    layers.stack.makeActive = function ()
+    layers.stack.makeActive = function (layerId, makeVisible)
     {
-        // Parse args
-        var layerId, makeVisible;
+        if (typeof layerId !== 'number' || layerId < 1)
+            throw new Error('Invalid layerId: ' + layerId);
 
-        if (typeof arguments[0] === 'number')
-        {
-            layerId = arguments[0];
-            makeVisible = arguments[1] || false;
-        }
-        else
-        {
-            makeVisible = arguments[0] || false;
-        }
-
-        if (!layerId || layerId < 1)
-            throw new Error(['Invalid layer identifier: "', layerId, '".'].join(''));
+        typeof makeVisible === 'boolean' || (makeVisible = false);
 
         var ref = new ActionReference();
         ref.putIdentifier(charIDToTypeID('Lyr '), layerId);

@@ -86,7 +86,7 @@
     /** 
      * Creates a new document using clipboard content.
      * @param {String} [name] Document name.
-     * @return Chained reference to document utilities.
+     * @return Chained reference to selection utilities.
      */
     selection.pasteToNewDocument = function (name)
     {
@@ -108,7 +108,7 @@
         if (Lifter.documents)
             Lifter.documents.flatten();
 
-        return this;
+        return selection;
     };
 
     /**

@@ -295,6 +295,24 @@ LifterBlendMode.fromBlendMode = function (blendMode) { return LifterBlendMode[St
 /** Converts the passed LifterBlendMode to a BlendMode. */
 LifterBlendMode.toBlendMode = function (lifterBlendMode) { return eval(lifterBlendMode.toString().replace(/LifterBlendMode/, 'BlendMode')); /* HACKY!! */ };
 
+/** Ensures the passed blendMode is expressed using the LifterBlendMode enumeration. @private */
+function _ensureLifterBlendMode(blendMode)
+{
+    if (blendMode instanceof Enumerator)
+        return blendMode;
+    else
+        return LifterBlendMode.fromBlendMode(blendMode);
+}
+
+/**
+ * Enumerates apply image source channels.
+ */
+var ApplyImageChannel = this.ApplyImageChannel = function ApplyImageChannel() { };
+ApplyImageChannel.RGB = new Enumerator('ApplyImageChannel.RGB', charIDToTypeID('RGB '));
+ApplyImageChannel.Red = new Enumerator('ApplyImageChannel.Red', charIDToTypeID('Rd  '));
+ApplyImageChannel.Green = new Enumerator('ApplyImageChannel.Green', charIDToTypeID('Grn '));
+ApplyImageChannel.Blue = new Enumerator('ApplyImageChannel.Blue', charIDToTypeID('Bl  '));
+
 
 // Global utilities
 /** Cached reference to DialogModes.NO. */
@@ -1067,22 +1085,14 @@ Number.prototype.clone = Boolean.prototype.clone = String.prototype.clone = func
         charIDToTypeID('Dtn '), // Duotone
     ];
 
-    /** Sets the passed document as active, executes the specified callback and resets active document to the old one. @private */
-    function _wrapSwitchActive(documentId, callback)
+    /** Sets the passed document as active and executes the specified callback. @private */
+    function _wrapSwitchActive(documentId, callback, context)
     {
-        // Store currently active document
-        var oldDocumentId = documents.prop('documentId');
-
         // Set active layer to documentId
-        if (documentId && oldDocumentId !== documentId)
-            documents.list.makeActive(documentId);
+        documents.list.makeActive(documentId);
 
         // Execute code
-        callback.call(null);
-
-        // Set active document back to original
-        if (documentId && oldDocumentId !== documentId)
-            documents.list.makeActive(oldLayerId);
+        callback.call(context);
     };
 
     /** Puts the correct value in 'ref' to the get the document specified by DocumentId. @private */
