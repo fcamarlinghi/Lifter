@@ -970,12 +970,13 @@
      * @param {Number} [sourceDocumentId] Source document identifier, defaults to currently active document if null.
      * @param {Number} [sourceLayerId] Source layer identifier, defaults to currently active layer if null.
      * @param {ApplyImageChannel} [sourceLayerId=ApplyImageChannel.RGB] Source channel identifier.
-     * @param {Boolean} [invert=false] Whether to inver the applied image.
+     * @param {Boolean} [invert=false] Whether to invert the applied image.
      * @param {BlendMode, LifterBlendMode} [blendMode=LifterBlendMode.NORMAL] Blend mode.
      * @param {Number} [opacity=100] Blend opacity.
+     * @param {Boolean} [preserveTransparency=true] Whether to preserve the transparency of the applied image.
      * @return Chained reference to layer utilities.
      */
-    layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity)
+    layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity, preserveTransparency)
     {
         if (!Lifter.documents)
             throw new Error('Lifter.layers.applyImage requires the Lifter.documents library.');
@@ -1007,8 +1008,9 @@
         (blendMode && blendMode.valueOf) || (blendMode = LifterBlendMode.NORMAL);
         blendMode = _ensureLifterBlendMode(blendMode);
 
-        // Opacity
+        // Opacity and transparency
         opacity = +opacity || 100.0;
+        typeof preserveTransparency === 'boolean' || (preserveTransparency = true);
 
         // Apply image
         // Source
@@ -1039,7 +1041,7 @@
         desc2.putReference(charIDToTypeID('T   '), ref);
         desc2.putEnumerated(charIDToTypeID('Clcl'), charIDToTypeID('Clcn'), blendMode.valueOf());
         desc2.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
-        desc2.putBoolean(charIDToTypeID('PrsT'), true);
+        desc2.putBoolean(charIDToTypeID('PrsT'), preserveTransparency);
         desc2.putBoolean(charIDToTypeID('Invr'), invert);
 
         var desc = new ActionDescriptor();
