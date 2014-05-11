@@ -969,10 +969,10 @@
      * Applies the specified layer into another one.
      * @param {Number} [sourceDocumentId] Source document identifier, defaults to currently active document if null.
      * @param {Number} [sourceLayerId] Source layer identifier, defaults to currently active layer if null.
-     * @param {ApplyImageChannel} [sourceLayerId] Source channel identifier, defaults to RGB if null.
-     * @param {Boolean} [sourceLayerId] Source channel identifier, defaults to RGB if null.
-     * @param {Number} [documentId] Identifier of the document to copy the specified layer into. Defaults
-     *                              to current document if null or not specified.
+     * @param {ApplyImageChannel} [sourceLayerId=ApplyImageChannel.RGB] Source channel identifier.
+     * @param {Boolean} [invert=false] Whether to inver the applied image.
+     * @param {BlendMode, LifterBlendMode} [blendMode=LifterBlendMode.NORMAL] Blend mode.
+     * @param {Number} [opacity=100] Blend opacity.
      * @return Chained reference to layer utilities.
      */
     layers.applyImage = function (sourceDocumentId, sourceLayerId, sourceChannel, invert, blendMode, opacity)
@@ -1062,6 +1062,50 @@
         executeAction(charIDToTypeID('Invr'), undefined, _dialogModesNo);
         return layers;
     }
+
+    /**
+     * Applies the specified layer into another one.
+     * @param {Number} [layerId] Layer identifier, defaults to currently active layer if null.
+     * @param {SolidColor} [fillColor] Fill color, defaults to background color if null.
+     * @param {BlendMode, LifterBlendMode} [blendMode=LifterBlendMode.NORMAL] Blend mode.
+     * @param {Number} [opacity=100] Blend opacity.
+     * @return Chained reference to layer utilities.
+     */
+    layers.fill = function (layerId, fillColor, blendMode, opacity)
+    {
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
+
+        // Color
+        (fillColor) || (fillColor = app.backgroundColor);
+
+        if (!(fillColor instanceof SolidColor))
+            throw new Error('Fill color must be a valid SolidColor: ' + fillColor);
+
+        // Blend mode
+        (blendMode && blendMode.valueOf) || (blendMode = LifterBlendMode.NORMAL);
+        blendMode = _ensureLifterBlendMode(blendMode);
+
+        // Opacity
+        opacity = +opacity || 100.0;
+
+        // Apply fill
+        var desc = new ActionDescriptor();
+        desc.putEnumerated(charIDToTypeID('Usng'), charIDToTypeID('FlCn'), charIDToTypeID('Clr '));
+
+        var desc2 = new ActionDescriptor();
+        desc2.putUnitDouble(charIDToTypeID('H   '), charIDToTypeID('#Ang'), fillColor.hsb.hue);
+        desc2.putDouble(charIDToTypeID('Strt'), fillColor.hsb.saturation);
+        desc2.putDouble(charIDToTypeID('Brgh'), fillColor.hsb.brightness);
+        desc.putObject(charIDToTypeID('Clr '), charIDToTypeID('HSBC'), desc2);
+
+        desc.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
+        desc.putEnumerated(charIDToTypeID('Md  '), charIDToTypeID('BlnM'), blendMode.valueOf());
+
+        executeAction(charIDToTypeID('Fl  '), desc, _dialogModesNo);
+
+        return layers;
+    };
 
     /**
      * Iterates over all layers contained in the current document, executing the specified callback on each element.
