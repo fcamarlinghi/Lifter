@@ -51,7 +51,7 @@
             desc.putString(charIDToTypeID('Nm  '), name);
 
         // Opacity
-        opacity = +opacity || 100.0;
+        typeof opacity === 'number' || (opacity = 100.0);
         desc.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
 
         // Blend mode
@@ -442,7 +442,7 @@
         'layerMaskDensity': {
             typeId: stringIDToTypeID('userMaskDensity'),
             type: DescValueType.UNITDOUBLE,
-            defaultValue: new UnitValue(100.0, '%'),
+            defaultValue: 100.0,
             get: function (prop, layerId, desc)
             {
                 if (!layers.prop(layerId, 'hasLayerMask'))
@@ -498,7 +498,7 @@
         'vectorMaskDensity': {
             typeId: stringIDToTypeID('vectorMaskDensity'),
             type: DescValueType.UNITDOUBLE,
-            defaultValue: new UnitValue(100.0, '%'),
+            defaultValue: 100.0,
             get: function (prop, layerId, desc)
             {
                 if (!layers.prop(layerId, 'hasVectorMask'))
@@ -554,7 +554,7 @@
         'filterMaskDensity': {
             typeId: stringIDToTypeID('filterMaskDensity'),
             type: DescValueType.UNITDOUBLE,
-            defaultValue: new UnitValue(100.0, '%'),
+            defaultValue: 100.0,
             get: function (prop, layerId, desc)
             {
                 if (!layers.prop(layerId, 'hasFilterMask'))
@@ -1009,7 +1009,7 @@
         blendMode = _ensureLifterBlendMode(blendMode);
 
         // Opacity and transparency
-        opacity = +opacity || 100.0;
+        typeof opacity === 'number' || (opacity = 100.0);
         typeof preserveTransparency === 'boolean' || (preserveTransparency = true);
 
         // Apply image
@@ -1089,7 +1089,7 @@
         blendMode = _ensureLifterBlendMode(blendMode);
 
         // Opacity
-        opacity = +opacity || 100.0;
+        typeof opacity === 'number' || (opacity = 100.0);
 
         // Apply fill
         var desc = new ActionDescriptor();

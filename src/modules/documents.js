@@ -92,10 +92,10 @@
         'resolution': {
             typeId: charIDToTypeID('Rslt'),
             type: DescValueType.UNITDOUBLE,
-            defaultValue: new UnitValue(72, 'px'),
+            defaultValue: 72,
             get: function (prop, documentId, desc)
             {
-                return new UnitValue(desc.getUnitDoubleValue(prop.typeId), 'px');
+                return desc.getUnitDoubleValue(prop.typeId);
             },
             set: false,
         },
@@ -321,12 +321,12 @@
         // Width
         if ((typeof width !== 'number' || width < 0) && !(width instanceof UnitValue))
             throw new Error('Invalid width: ' + width);
-        desc.putUnitDouble(charIDToTypeID('Wdth'), charIDToTypeID('#Rlt'), (width instanceof UnitValue) ? width.value : width);
+        desc.putUnitDouble(charIDToTypeID('Wdth'), charIDToTypeID('#Pxl'), (width instanceof UnitValue) ? width.as('px') : width);
 
         // Height
         if ((typeof height !== 'number' || height < 0) && !(height instanceof UnitValue))
             throw new Error('Invalid height: ' + height);
-        desc.putUnitDouble(charIDToTypeID('Hght'), charIDToTypeID('#Rlt'), (height instanceof UnitValue) ? height.value : height);
+        desc.putUnitDouble(charIDToTypeID('Hght'), charIDToTypeID('#Pxl'), (height instanceof UnitValue) ? height.as('px') : height);
 
         // Resolution
         desc.putUnitDouble(charIDToTypeID('Rslt'), charIDToTypeID('#Rsl'), (typeof resolution === 'number' && resolution > 0) ? resolution : 72);
@@ -583,9 +583,30 @@
         var originalResolution = documents.prop('resolution');
 
         // Get resize values
-        width = typeof width === 'number' ? new UnitValue(Math.abs(width), 'px') : originalWidth;
-        height = typeof height === 'number' ? new UnitValue(Math.abs(height), 'px') : originalHeight;
-        resolution = typeof resolution === 'number' ? new UnitValue(Math.abs(resolution), 'px') : originalResolution;
+        if (typeof width === 'number')
+            width = new UnitValue(width, 'px');
+        else if (!(width instanceof UnitValue))
+            width = originalWidth;
+
+        if (typeof height === 'number')
+        {
+            height = new UnitValue(height, 'px');
+        }
+        else if (!(height instanceof UnitValue))
+        {
+            if (width.type === '%')
+            {
+                // If width is specified in percentage use uniform scaling
+                height = new UnitValue(width.value, '%');
+                height.baseUnit = new UnitValue(originalHeight.as('px'), 'px');
+            }
+            else
+            {
+                height = originalHeight;
+            }
+        }
+
+        resolution = typeof resolution === 'number' ? resolution : originalResolution;
         typeof scaleStyles === 'boolean' || (scaleStyles = true);
 
         // Early exit if image is not modified
@@ -595,12 +616,11 @@
             return documents;
 
         var desc = new ActionDescriptor();
-        var unit = width.type === 'px' ? charIDToTypeID("#Pxl") : charIDToTypeID("#Prc");
 
-        if (width === height && originalWidth === originalHeight)
+        if (width === height)
         {
             // Constrain proportions
-            desc.putUnitDouble(charIDToTypeID("Wdth"), unit, width);
+            desc.putUnitDouble(charIDToTypeID("Wdth"), charIDToTypeID("#Pxl"), width.as('px'));
             desc.putBoolean(charIDToTypeID("CnsP"), true);
 
             // Scale styles
@@ -609,8 +629,8 @@
         else
         {
             // Non-uniform scaling
-            desc.putUnitDouble(charIDToTypeID("Wdth"), unit, width);
-            desc.putUnitDouble(charIDToTypeID("Hght"), unit, height);
+            desc.putUnitDouble(charIDToTypeID("Wdth"), charIDToTypeID("#Pxl"), width.as('px'));
+            desc.putUnitDouble(charIDToTypeID("Hght"), charIDToTypeID("#Pxl"), height.as('px'));
         }
 
         // Resolution
