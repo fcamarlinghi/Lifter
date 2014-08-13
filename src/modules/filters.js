@@ -29,7 +29,7 @@
      */
     filters.blur.blur = function ()
     {
-        executeAction(charIDToTypeID('Blr '), undefined, _dialogModesNo);
+        executeAction(c2id('Blr '), undefined, _dialogModesNo);
         return filters;
     };
 
@@ -39,7 +39,7 @@
      */
     filters.blur.blurMore = function ()
     {
-        executeAction(charIDToTypeID('BlrM'), undefined, _dialogModesNo);
+        executeAction(c2id('BlrM'), undefined, _dialogModesNo);
         return filters;
     };
 
@@ -51,8 +51,8 @@
     filters.blur.gaussianBlur = function (radius)
     {
         var desc = new ActionDescriptor();
-        desc.putUnitDouble(charIDToTypeID('Rds '), charIDToTypeID('#Pxl'), +radius || 1.0);
-        executeAction(charIDToTypeID('GsnB'), desc, DialogModes.NO);
+        desc.putUnitDouble(c2id('Rds '), c2id('#Pxl'), +radius || 1.0);
+        executeAction(c2id('GsnB'), desc, DialogModes.NO);
         return filters;
     };
 
@@ -68,7 +68,7 @@
      */
     filters.sharpen.sharpen = function ()
     {
-        executeAction(charIDToTypeID('Shrp'), undefined, _dialogModesNo);
+        executeAction(c2id('Shrp'), undefined, _dialogModesNo);
         return filters;
     };
 
@@ -78,7 +78,7 @@
      */
     filters.sharpen.sharpenEdges = function ()
     {
-        executeAction(charIDToTypeID('ShrE'), undefined, _dialogModesNo);
+        executeAction(c2id('ShrE'), undefined, _dialogModesNo);
         return filters;
     };
 
@@ -88,7 +88,7 @@
      */
     filters.sharpen.sharpenMore = function ()
     {
-        executeAction(charIDToTypeID('ShrM'), undefined, _dialogModesNo);
+        executeAction(c2id('ShrM'), undefined, _dialogModesNo);
         return filters;
     };
 
@@ -104,7 +104,7 @@
      */
     filters.render.clouds = function ()
     {
-        executeAction(charIDToTypeID('Clds'), new ActionDescriptor(), _dialogModesNo);
+        executeAction(c2id('Clds'), new ActionDescriptor(), _dialogModesNo);
         return filters;
     };
 

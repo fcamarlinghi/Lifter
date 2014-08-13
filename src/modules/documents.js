@@ -20,14 +20,14 @@
     /** List of all available color modes (aka color spaces), indexes match the ones of the DocumentMode enumeration. @private */
     var _documentColorModes = [
         -1, // Empty element as DocumentMode enumeration starts at index 1
-        charIDToTypeID('Grsc'), // Grayscale
-        charIDToTypeID('RGBC'), // RGB
-        charIDToTypeID('CMYC'), // CMYK
-        charIDToTypeID('LbCl'), // LAB
-        charIDToTypeID('Btmp'), // Bitmap
-        charIDToTypeID('Indl'), // Indexed Color
-        charIDToTypeID('Mlth'), // Multichannel
-        charIDToTypeID('Dtn '), // Duotone
+        c2id('Grsc'), // Grayscale
+        c2id('RGBC'), // RGB
+        c2id('CMYC'), // CMYK
+        c2id('LbCl'), // LAB
+        c2id('Btmp'), // Bitmap
+        c2id('Indl'), // Indexed Color
+        c2id('Mlth'), // Multichannel
+        c2id('Dtn '), // Duotone
     ];
 
     /** Sets the passed document as active and executes the specified callback. @private */
@@ -49,12 +49,12 @@
             if (documents.count() === 0)
                 throw new Error('Could not target current document: no documents are currently open.');
 
-            ref.putEnumerated(charIDToTypeID('Dcmn'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+            ref.putEnumerated(c2id('Dcmn'), c2id('Ordn'), c2id('Trgt'));
         }
         else
         {
             // Use DocumentId directly
-            ref.putIdentifier(charIDToTypeID('Dcmn'), documentId);
+            ref.putIdentifier(c2id('Dcmn'), documentId);
         }
     };
 
@@ -63,12 +63,12 @@
      * Supported document properties. This is public so that additional properties can be added at runtime.
      */
     documents.supportedProperties = {
-        'itemIndex': { typeId: charIDToTypeID('ItmI'), type: DescValueType.INTEGERTYPE, set: false, },
+        'itemIndex': { typeId: c2id('ItmI'), type: DescValueType.INTEGERTYPE, set: false, },
 
-        'documentId': { typeId: charIDToTypeID('DocI'), type: DescValueType.INTEGERTYPE, set: false, },
+        'documentId': { typeId: c2id('DocI'), type: DescValueType.INTEGERTYPE, set: false, },
 
         'width': {
-            typeId: charIDToTypeID('Wdth'),
+            typeId: c2id('Wdth'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: new UnitValue(64, 'px'),
             get: function (prop, documentId, desc)
@@ -79,7 +79,7 @@
         },
 
         'height': {
-            typeId: charIDToTypeID('Hght'),
+            typeId: c2id('Hght'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: new UnitValue(64, 'px'),
             get: function (prop, documentId, desc)
@@ -90,7 +90,7 @@
         },
 
         'resolution': {
-            typeId: charIDToTypeID('Rslt'),
+            typeId: c2id('Rslt'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 72,
             get: function (prop, documentId, desc)
@@ -100,10 +100,10 @@
             set: false,
         },
 
-        'name': { typeId: charIDToTypeID('Ttl '), type: DescValueType.STRINGTYPE, defaultValue: 'Untitled', set: false, },
+        'name': { typeId: c2id('Ttl '), type: DescValueType.STRINGTYPE, defaultValue: 'Untitled', set: false, },
 
         'bitsPerChannel': {
-            typeId: charIDToTypeID('Dpth'),
+            typeId: c2id('Dpth'),
             type: DescValueType.INTEGERTYPE,
             defaultValue: BitsPerChannelType.EIGHT,
             get: function (prop, documentId, desc)
@@ -122,7 +122,7 @@
         },
 
         'mode': {
-            typeId: charIDToTypeID('Md  '),
+            typeId: c2id('Md  '),
             type: DescValueType.ENUMERATEDTYPE,
             defaultValue: DocumentMode.RGB,
             get: function (prop, documentId, desc)
@@ -151,10 +151,10 @@
                     if (value === DocumentMode.BITMAP)
                     {
                         var desc2 = new ActionDescriptor();
-                        desc2.putUnitDouble(charIDToTypeID('Rslt'), charIDToTypeID('#Rsl'), documents.prop('resolution'));
-                        desc2.putEnumerated(charIDToTypeID('Mthd'), charIDToTypeID('Mthd'), charIDToTypeID('DfnD'));
-                        desc.putObject(charIDToTypeID('T   '), charIDToTypeID('BtmM'), desc2);
-                        executeAction(charIDToTypeID('CnvM'), desc, _dialogModesNo);
+                        desc2.putUnitDouble(c2id('Rslt'), c2id('#Rsl'), documents.prop('resolution'));
+                        desc2.putEnumerated(c2id('Mthd'), c2id('Mthd'), c2id('DfnD'));
+                        desc.putObject(c2id('T   '), c2id('BtmM'), desc2);
+                        executeAction(c2id('CnvM'), desc, _dialogModesNo);
                     }
                     else
                     {
@@ -173,15 +173,15 @@
                             default: throw new Error('Invalid color mode: ' + value + '.');
                         }
 
-                        desc.putClass(charIDToTypeID('T   '), mode);
-                        executeAction(charIDToTypeID('CnvM'), desc, _dialogModesNo);
+                        desc.putClass(c2id('T   '), mode);
+                        executeAction(c2id('CnvM'), desc, _dialogModesNo);
                     }
                 });
             },
         },
 
         'colorProfileName': {
-            typeId: stringIDToTypeID('profile'),
+            typeId: s2id('profile'),
             type: DescValueType.STRINGTYPE,
             defaultValue: 'sRGB IEC61966-2.1',
             set: function (prop, documentId, value)
@@ -191,15 +191,15 @@
                     var ref = new ActionReference();
                     _getDocumentIdRef(documentId, ref);
                     var desc = new ActionDescriptor();
-                    desc.putReference(charIDToTypeID('null'), ref);
-                    desc.putString(stringIDToTypeID('profile'), value);
-                    executeAction(stringIDToTypeID('assignProfile'), desc, _dialogModesNo);
+                    desc.putReference(c2id('null'), ref);
+                    desc.putString(s2id('profile'), value);
+                    executeAction(s2id('assignProfile'), desc, _dialogModesNo);
                 });
             },
         },
 
         'format': {
-            typeId: charIDToTypeID('Fmt '),
+            typeId: c2id('Fmt '),
             type: DescValueType.STRINGTYPE,
             defaultValue: 'Photoshop',
             get: function (prop, documentId, desc)
@@ -212,14 +212,14 @@
             set: false,
         },
 
-        'isDirty': { typeId: charIDToTypeID('IsDr'), type: DescValueType.BOOLEANTYPE, defaultValue: false, set: false, },
+        'isDirty': { typeId: c2id('IsDr'), type: DescValueType.BOOLEANTYPE, defaultValue: false, set: false, },
 
-        'pixelAspectRatio': { typeId: stringIDToTypeID('pixelScaleFactor'), type: DescValueType.UNITDOUBLE, defaultValue: 1, set: false, },
+        'pixelAspectRatio': { typeId: s2id('pixelScaleFactor'), type: DescValueType.UNITDOUBLE, defaultValue: 1, set: false, },
 
-        'zoom': { typeId: charIDToTypeID('Zm  '), type: DescValueType.UNITDOUBLE, defaultValue: 1, set: false, },
+        'zoom': { typeId: c2id('Zm  '), type: DescValueType.UNITDOUBLE, defaultValue: 1, set: false, },
 
         'xmpMetadata': {
-            typeId: stringIDToTypeID('XMPMetadataAsUTF8'),
+            typeId: s2id('XMPMetadataAsUTF8'),
             type: DescValueType.STRINGTYPE,
             defaultValue: '',
             get: function (prop, documentId, desc)
@@ -243,7 +243,7 @@
         },
 
         'fullName': {
-            typeId: charIDToTypeID('FilR'),
+            typeId: c2id('FilR'),
             type: DescValueType.ALIASTYPE,
             defaultValue: null,
             get: function (prop, documentId, desc)
@@ -264,9 +264,9 @@
     documents.count = function ()
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('NmbD'));
-        ref.putEnumerated(charIDToTypeID('capp'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
-        return executeActionGet(ref).getInteger(charIDToTypeID('NmbD'));
+        ref.putProperty(c2id('Prpr'), c2id('NmbD'));
+        ref.putEnumerated(c2id('capp'), c2id('Ordn'), c2id('Trgt'));
+        return executeActionGet(ref).getInteger(c2id('NmbD'));
     };
 
     /**
@@ -280,10 +280,10 @@
             throw new Error(['Invalid itemIndex: "', itemIndex, '".'].join(''));
 
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('DocI'));
-        ref.putIndex(charIDToTypeID('Dcmn'), itemIndex);
+        ref.putProperty(c2id('Prpr'), c2id('DocI'));
+        ref.putIndex(c2id('Dcmn'), itemIndex);
 
-        return executeActionGet(ref).getInteger(charIDToTypeID('DocI'));
+        return executeActionGet(ref).getInteger(c2id('DocI'));
     };
 
     /** 
@@ -307,32 +307,32 @@
         // Mode
         switch (mode)
         {
-            case NewDocumentMode.GRAYSCALE: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('Grys')); break;
-            case NewDocumentMode.CMYK: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('CMYM')); break;
-            case NewDocumentMode.LAB: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('LbCM')); break;
-            case NewDocumentMode.BITMAP: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('BtmM')); break;
-            default: desc.putClass(charIDToTypeID('Md  '), charIDToTypeID('RGBM')); break; // Default to NewDocumentMode.RGB
+            case NewDocumentMode.GRAYSCALE: desc.putClass(c2id('Md  '), c2id('Grys')); break;
+            case NewDocumentMode.CMYK: desc.putClass(c2id('Md  '), c2id('CMYM')); break;
+            case NewDocumentMode.LAB: desc.putClass(c2id('Md  '), c2id('LbCM')); break;
+            case NewDocumentMode.BITMAP: desc.putClass(c2id('Md  '), c2id('BtmM')); break;
+            default: desc.putClass(c2id('Md  '), c2id('RGBM')); break; // Default to NewDocumentMode.RGB
         }
 
         // Name
         if (typeof name === 'string' && name.length)
-            desc.putString(charIDToTypeID('Nm  '), name);
+            desc.putString(c2id('Nm  '), name);
 
         // Width
         if ((typeof width !== 'number' || width < 0) && !(width instanceof UnitValue))
             throw new Error('Invalid width: ' + width);
-        desc.putUnitDouble(charIDToTypeID('Wdth'), charIDToTypeID('#Pxl'), (width instanceof UnitValue) ? width.as('px') : width);
+        desc.putUnitDouble(c2id('Wdth'), c2id('#Pxl'), (width instanceof UnitValue) ? width.as('px') : width);
 
         // Height
         if ((typeof height !== 'number' || height < 0) && !(height instanceof UnitValue))
             throw new Error('Invalid height: ' + height);
-        desc.putUnitDouble(charIDToTypeID('Hght'), charIDToTypeID('#Pxl'), (height instanceof UnitValue) ? height.as('px') : height);
+        desc.putUnitDouble(c2id('Hght'), c2id('#Pxl'), (height instanceof UnitValue) ? height.as('px') : height);
 
         // Resolution
-        desc.putUnitDouble(charIDToTypeID('Rslt'), charIDToTypeID('#Rsl'), (typeof resolution === 'number' && resolution > 0) ? resolution : 72);
+        desc.putUnitDouble(c2id('Rslt'), c2id('#Rsl'), (typeof resolution === 'number' && resolution > 0) ? resolution : 72);
 
         // Pixel aspect ratio
-        desc.putDouble(stringIDToTypeID('pixelScaleFactor'), (typeof pixelAspectRatio === 'number' && pixelAspectRatio > 0) ? pixelAspectRatio : 1);
+        desc.putDouble(s2id('pixelScaleFactor'), (typeof pixelAspectRatio === 'number' && pixelAspectRatio > 0) ? pixelAspectRatio : 1);
 
         // Initial fill
         initialFill || (initialFill = DocumentFill.WHITE);
@@ -340,41 +340,41 @@
         if (initialFill instanceof SolidColor)
         {
             // SolidColor
-            desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Clr '));
+            desc.putEnumerated(c2id('Fl  '), c2id('Fl  '), c2id('Clr '));
             var desc3 = new ActionDescriptor();
-            desc3.putUnitDouble(charIDToTypeID('H   '), charIDToTypeID('#Ang'), initialFill.hsb.hue);
-            desc3.putDouble(charIDToTypeID('Strt'), initialFill.hsb.saturation);
-            desc3.putDouble(charIDToTypeID('Brgh'), initialFill.hsb.brightness);
-            desc.putObject(charIDToTypeID('FlCl'), charIDToTypeID('HSBC'), desc3);
+            desc3.putUnitDouble(c2id('H   '), c2id('#Ang'), initialFill.hsb.hue);
+            desc3.putDouble(c2id('Strt'), initialFill.hsb.saturation);
+            desc3.putDouble(c2id('Brgh'), initialFill.hsb.brightness);
+            desc.putObject(c2id('FlCl'), c2id('HSBC'), desc3);
         }
         else
         {
             // DocumentFill
             switch (initialFill)
             {
-                case DocumentFill.TRANSPARENT: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Trns')); break;
-                case DocumentFill.BACKGROUNDCOLOR: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('BckC')); break;
-                default: desc.putEnumerated(charIDToTypeID('Fl  '), charIDToTypeID('Fl  '), charIDToTypeID('Wht ')); break; // Default to DocumentFill.WHITE
+                case DocumentFill.TRANSPARENT: desc.putEnumerated(c2id('Fl  '), c2id('Fl  '), c2id('Trns')); break;
+                case DocumentFill.BACKGROUNDCOLOR: desc.putEnumerated(c2id('Fl  '), c2id('Fl  '), c2id('BckC')); break;
+                default: desc.putEnumerated(c2id('Fl  '), c2id('Fl  '), c2id('Wht ')); break; // Default to DocumentFill.WHITE
             }
         }
 
         // Color depth
         switch (bitsPerChannel)
         {
-            case BitsPerChannelType.ONE: desc.putInteger(charIDToTypeID('Dpth'), 1); break;
-            case BitsPerChannelType.SIXTEEN: desc.putInteger(charIDToTypeID('Dpth'), 16); break;
-            case BitsPerChannelType.THIRTYTWO: desc.putInteger(charIDToTypeID('Dpth'), 32); break;
-            default: desc.putInteger(charIDToTypeID('Dpth'), 8); break; // Default to BitsPerChannelType.EIGHT
+            case BitsPerChannelType.ONE: desc.putInteger(c2id('Dpth'), 1); break;
+            case BitsPerChannelType.SIXTEEN: desc.putInteger(c2id('Dpth'), 16); break;
+            case BitsPerChannelType.THIRTYTWO: desc.putInteger(c2id('Dpth'), 32); break;
+            default: desc.putInteger(c2id('Dpth'), 8); break; // Default to BitsPerChannelType.EIGHT
         }
 
         // Color profile
         if (typeof colorProfileName === 'string' && colorProfileName.length)
-            desc.putString(stringIDToTypeID('profile'), colorProfileName);
+            desc.putString(s2id('profile'), colorProfileName);
 
         // Create new document
         var desc2 = new ActionDescriptor();
-        desc2.putObject(charIDToTypeID('Nw  '), charIDToTypeID('Dcmn'), desc);
-        executeAction(charIDToTypeID('Mk  '), desc2, _dialogModesNo);
+        desc2.putObject(c2id('Nw  '), c2id('Dcmn'), desc);
+        executeAction(c2id('Mk  '), desc2, _dialogModesNo);
         return documents;
     };
 
@@ -386,8 +386,8 @@
     documents.open = function (file)
     {
         var desc = new ActionDescriptor();
-        desc.putPath(charIDToTypeID('null'), _ensureFile(file));
-        executeAction(charIDToTypeID('Opn '), desc, _dialogModesNo);
+        desc.putPath(c2id('null'), _ensureFile(file));
+        executeAction(c2id('Opn '), desc, _dialogModesNo);
         return documents;
     };
 
@@ -516,7 +516,7 @@
             ref = new ActionReference();
             _getDocumentIdRef(documentId, ref);
             desc = executeActionGet(ref);
-            return _getWrappedActionDescriptor(desc, documents.supportedProperties, documentId || desc.getInteger(charIDToTypeID('DocI')));
+            return _getWrappedActionDescriptor(desc, documents.supportedProperties, documentId || desc.getInteger(c2id('DocI')));
         }
         else
         {
@@ -533,7 +533,7 @@
                 ref = new ActionReference();
 
                 if (prop.typeId)
-                    ref.putProperty(charIDToTypeID('Prpr'), prop.typeId);
+                    ref.putProperty(c2id('Prpr'), prop.typeId);
 
                 _getDocumentIdRef(documentId, ref);
                 desc = executeActionGet(ref);
@@ -618,37 +618,37 @@
         if (width === height)
         {
             // Constrain proportions
-            desc.putUnitDouble(charIDToTypeID("Wdth"), charIDToTypeID("#Pxl"), width.as('px'));
-            desc.putBoolean(charIDToTypeID("CnsP"), true);
+            desc.putUnitDouble(c2id("Wdth"), c2id("#Pxl"), width.as('px'));
+            desc.putBoolean(c2id("CnsP"), true);
 
             // Scale styles
-            desc.putBoolean(stringIDToTypeID("scaleStyles"), scaleStyles);
+            desc.putBoolean(s2id("scaleStyles"), scaleStyles);
         }
         else
         {
             // Non-uniform scaling
-            desc.putUnitDouble(charIDToTypeID("Wdth"), charIDToTypeID("#Pxl"), width.as('px'));
-            desc.putUnitDouble(charIDToTypeID("Hght"), charIDToTypeID("#Pxl"), height.as('px'));
+            desc.putUnitDouble(c2id("Wdth"), c2id("#Pxl"), width.as('px'));
+            desc.putUnitDouble(c2id("Hght"), c2id("#Pxl"), height.as('px'));
         }
 
         // Resolution
         if (resolution !== originalResolution)
-            desc.putUnitDouble(charIDToTypeID("Rslt"), charIDToTypeID("#Rsl"), resolution);
+            desc.putUnitDouble(c2id("Rslt"), c2id("#Rsl"), resolution);
 
         // Resample method
         switch (resampleMethod)
         {
-            case ResampleMethod.NEARESTNEIGHBOR: resampleMethod = stringIDToTypeID("nearestNeighbor"); break;
-            case ResampleMethod.BILINEAR: resampleMethod = stringIDToTypeID("bilinear"); break;
-            case ResampleMethod.BICUBIC: resampleMethod = stringIDToTypeID("bicubic"); break;
-            case ResampleMethod.BICUBICSHARPER: resampleMethod = stringIDToTypeID("bicubicSharper"); break;
-            case ResampleMethod.BICUBICSMOOTHER: resampleMethod = stringIDToTypeID("bicubicSmoother"); break;
-            default: resampleMethod = stringIDToTypeID("bicubicAutomatic"); break;
+            case ResampleMethod.NEARESTNEIGHBOR: resampleMethod = s2id("nearestNeighbor"); break;
+            case ResampleMethod.BILINEAR: resampleMethod = s2id("bilinear"); break;
+            case ResampleMethod.BICUBIC: resampleMethod = s2id("bicubic"); break;
+            case ResampleMethod.BICUBICSHARPER: resampleMethod = s2id("bicubicSharper"); break;
+            case ResampleMethod.BICUBICSMOOTHER: resampleMethod = s2id("bicubicSmoother"); break;
+            default: resampleMethod = s2id("bicubicAutomatic"); break;
         }
-        desc.putEnumerated(charIDToTypeID("Intr"), charIDToTypeID("Intp"), resampleMethod);
+        desc.putEnumerated(c2id("Intr"), c2id("Intp"), resampleMethod);
 
         // Resize
-        executeAction(charIDToTypeID("ImgS"), desc, _dialogModesNo);
+        executeAction(c2id("ImgS"), desc, _dialogModesNo);
         return documents;
     };
 
@@ -661,18 +661,18 @@
     documents.duplicate = function (duplicateName, merge)
     {
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Dcmn'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+        ref.putEnumerated(c2id('Dcmn'), c2id('Ordn'), c2id('Trgt'));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
+        desc.putReference(c2id('null'), ref);
 
         if (typeof duplicateName === 'string' && duplicateName.length)
-            desc.putString(charIDToTypeID('Nm  '), duplicateName);
+            desc.putString(c2id('Nm  '), duplicateName);
 
         if (merge)
-            desc.putBoolean(charIDToTypeID('Mrgd'), true);
+            desc.putBoolean(c2id('Mrgd'), true);
 
-        executeAction(charIDToTypeID('Dplc'), desc, _dialogModesNo);
+        executeAction(c2id('Dplc'), desc, _dialogModesNo);
         return documents;
     };
 
@@ -682,7 +682,7 @@
      */
     documents.flatten = function ()
     {
-        executeAction(charIDToTypeID('FltI'), undefined, _dialogModesNo);
+        executeAction(c2id('FltI'), undefined, _dialogModesNo);
         return documents;
     };
 
@@ -721,10 +721,10 @@
             throw new Error(['Invalid document identifier: ', documentId, '.'].join(''));
 
         var ref = new ActionReference();
-        ref.putIdentifier(charIDToTypeID('Dcmn'), documentId);
+        ref.putIdentifier(c2id('Dcmn'), documentId);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
 
         // Chaining
         return documents;

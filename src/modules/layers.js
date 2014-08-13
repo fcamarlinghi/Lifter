@@ -48,19 +48,19 @@
 
         // Name
         if (typeof name === 'string' && name.length)
-            desc.putString(charIDToTypeID('Nm  '), name);
+            desc.putString(c2id('Nm  '), name);
 
         // Opacity
         typeof opacity === 'number' || (opacity = 100.0);
-        desc.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
+        desc.putUnitDouble(c2id('Opct'), c2id('#Prc'), opacity);
 
         // Blend mode
         (blendMode && blendMode.valueOf) || (blendMode = BlendMode.NORMAL);
-        desc.putEnumerated(charIDToTypeID('Md  '), charIDToTypeID('BlnM'), _ensureLifterBlendMode(blendMode).valueOf());
+        desc.putEnumerated(c2id('Md  '), c2id('BlnM'), _ensureLifterBlendMode(blendMode).valueOf());
 
         // Color
         (color && color.valueOf) || (color = LayerColor.NONE);
-        desc.putEnumerated(charIDToTypeID('Clr '), charIDToTypeID('Clr '), color.valueOf());
+        desc.putEnumerated(c2id('Clr '), c2id('Clr '), color.valueOf());
 
         return desc;
     };
@@ -73,12 +73,12 @@
             // If layerId is not passed, assume current layer
             // If layerId is 0 we're targeting the background layer in a document where background is the only layer
             // Use enumeration to get the background as getting it using LayerId directly will throw an error
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Trgt'));
         }
         else
         {
             // Use layerId directly
-            ref.putIdentifier(charIDToTypeID('Lyr '), layerId);
+            ref.putIdentifier(c2id('Lyr '), layerId);
         }
     };
 
@@ -88,7 +88,7 @@
         if (typeof itemIndex !== 'number')
         {
             // If itemIndex is not passed, assume current layer
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Trgt'));
         }
         else if (layers.count() === 0)
         {
@@ -99,7 +99,7 @@
 
             // Use enumeration to get the background as getting it using
             // ItemIndex directly will throw an error
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Trgt'));
         }
         else
         {
@@ -108,7 +108,7 @@
                 itemIndex--;
 
             // Use correct layer itemIndex
-            ref.putIndex(charIDToTypeID('Lyr '), itemIndex);
+            ref.putIndex(c2id('Lyr '), itemIndex);
         }
 
         return ref;
@@ -125,9 +125,9 @@
         else
         {
             var ref = new ActionReference();
-            ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('LyrI'));
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), direction);
-            return executeActionGet(ref).getInteger(charIDToTypeID('LyrI'));
+            ref.putProperty(c2id('Prpr'), c2id('LyrI'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), direction);
+            return executeActionGet(ref).getInteger(c2id('LyrI'));
         }
 
         return layers;
@@ -150,7 +150,7 @@
      */
     layers.supportedProperties = {
         'itemIndex': {
-            typeId: charIDToTypeID('ItmI'),
+            typeId: c2id('ItmI'),
             type: DescValueType.INTEGERTYPE,
             set: function (prop, layerId, value)
             {
@@ -162,21 +162,21 @@
                 _getLayerIdRef(layerId, ref);
 
                 var ref2 = new ActionReference();
-                ref2.putIndex(charIDToTypeID('Lyr '), value);
+                ref2.putIndex(c2id('Lyr '), value);
 
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
-                desc.putReference(charIDToTypeID('T   '), ref2);
-                desc.putBoolean(charIDToTypeID('Adjs'), false);
-                desc.putInteger(charIDToTypeID('Vrsn'), 5);
-                executeAction(charIDToTypeID('move'), desc, _dialogModesNo);
+                desc.putReference(c2id('null'), ref);
+                desc.putReference(c2id('T   '), ref2);
+                desc.putBoolean(c2id('Adjs'), false);
+                desc.putInteger(c2id('Vrsn'), 5);
+                executeAction(c2id('move'), desc, _dialogModesNo);
             },
         },
 
-        'layerId': { typeId: charIDToTypeID('LyrI'), type: DescValueType.INTEGERTYPE, set: false, },
+        'layerId': { typeId: c2id('LyrI'), type: DescValueType.INTEGERTYPE, set: false, },
 
         'name': {
-            typeId: charIDToTypeID('Nm  '),
+            typeId: c2id('Nm  '),
             type: DescValueType.STRINGTYPE,
             defaultValue: 'Layer',
             set: function (prop, layerId, value)
@@ -185,19 +185,19 @@
                 _wrapSwitchActive(layerId, function ()
                 {
                     var ref = new ActionReference();
-                    ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+                    ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Trgt'));
                     var desc = new ActionDescriptor();
-                    desc.putReference(charIDToTypeID('null'), ref);
+                    desc.putReference(c2id('null'), ref);
                     var desc2 = new ActionDescriptor();
                     desc2.putString(prop.typeId, value);
-                    desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                    executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                    desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                    executeAction(c2id('setd'), desc, _dialogModesNo);
                 });
             },
         },
 
         'color': {
-            typeId: charIDToTypeID('Clr '),
+            typeId: c2id('Clr '),
             type: DescValueType.ENUMERATEDTYPE,
             defaultValue: LayerColor.NONE,
             get: function (prop, layerId, desc)
@@ -213,17 +213,17 @@
                     var ref = new ActionReference();
                     _getLayerIdRef(layerId, ref);
                     var desc = new ActionDescriptor();
-                    desc.putReference(charIDToTypeID('null'), ref);
+                    desc.putReference(c2id('null'), ref);
                     var desc2 = new ActionDescriptor();
-                    desc2.putEnumerated(charIDToTypeID('Clr '), charIDToTypeID('Clr '), value.valueOf());
-                    desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                    executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                    desc2.putEnumerated(c2id('Clr '), c2id('Clr '), value.valueOf());
+                    desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                    executeAction(c2id('setd'), desc, _dialogModesNo);
                 });
             },
         },
 
         'visible': {
-            typeId: charIDToTypeID('Vsbl'),
+            typeId: c2id('Vsbl'),
             type: DescValueType.BOOLEANTYPE,
             defaultValue: true,
             set: function (prop, layerId, value)
@@ -233,17 +233,17 @@
                 var list = new ActionList();
                 list.putReference(ref);
                 var desc = new ActionDescriptor();
-                desc.putList(charIDToTypeID('null'), list);
+                desc.putList(c2id('null'), list);
 
                 if (value)
-                    executeAction(charIDToTypeID('Shw '), desc, _dialogModesNo);
+                    executeAction(c2id('Shw '), desc, _dialogModesNo);
                 else
-                    executeAction(charIDToTypeID('Hd  '), desc, _dialogModesNo);
+                    executeAction(c2id('Hd  '), desc, _dialogModesNo);
             },
         },
 
         'opacity': {
-            typeId: charIDToTypeID('Opct'),
+            typeId: c2id('Opct'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 100.0,
             get: function (prop, layerId, desc)
@@ -263,11 +263,11 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Prc'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Prc'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
 
                 // Reset visibility
                 if (!oldVisible)
@@ -276,7 +276,7 @@
         },
 
         'fillOpacity': {
-            typeId: stringIDToTypeID('fillOpacity'),
+            typeId: s2id('fillOpacity'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 100.0,
             get: function (prop, layerId, desc)
@@ -299,11 +299,11 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Prc'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Prc'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
 
                 // Reset visibility
                 if (!oldVisible)
@@ -312,7 +312,7 @@
         },
 
         'blendMode': {
-            typeId: charIDToTypeID('Md  '),
+            typeId: c2id('Md  '),
             type: DescValueType.ENUMERATEDTYPE,
             defaultValue: BlendMode.NORMAL,
             get: function (prop, layerId, desc)
@@ -331,16 +331,16 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putEnumerated(prop.typeId, charIDToTypeID('BlnM'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putEnumerated(prop.typeId, c2id('BlnM'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'type': {
-            typeId: stringIDToTypeID('layerSection'),
+            typeId: s2id('layerSection'),
             type: DescValueType.ENUMERATEDTYPE,
             get: function (prop, layerId, desc)
             {
@@ -366,17 +366,17 @@
                 if (layers.prop(layerId, 'type') !== LayerType.CONTENT)
                     throw new Error('Unable to get "kind" for layer sets.');
 
-                if (desc.hasKey(stringIDToTypeID('textKey')))
+                if (desc.hasKey(s2id('textKey')))
                     return LayerKind.TEXT;
 
                 // Includes LayerKind.VIDEO
-                if (desc.hasKey(stringIDToTypeID('smartObject')))
+                if (desc.hasKey(s2id('smartObject')))
                     return LayerKind.SMARTOBJECT;
 
-                if (desc.hasKey(stringIDToTypeID('layer3D')))
+                if (desc.hasKey(s2id('layer3D')))
                     return LayerKind.LAYER3D;
 
-                var adjustmentType = stringIDToTypeID('adjustment');
+                var adjustmentType = s2id('adjustment');
 
                 if (desc.hasKey(adjustmentType))
                 {
@@ -416,7 +416,7 @@
         },
 
         'bounds': {
-            typeId: stringIDToTypeID('bounds'),
+            typeId: s2id('bounds'),
             type: DescValueType.OBJECTTYPE,
             get: function (prop, layerId, desc)
             {
@@ -425,22 +425,22 @@
                 // LayerBounds seems to be always saved in pixels,
                 // but unit is loaded from document anyways
                 return new LayerBounds(
-                        bounds.getUnitDoubleValue(charIDToTypeID('Top ')),
-                        bounds.getUnitDoubleValue(charIDToTypeID('Left')),
-                        bounds.getUnitDoubleValue(charIDToTypeID('Btom')),
-                        bounds.getUnitDoubleValue(charIDToTypeID('Rght')),
-                        bounds.getUnitDoubleType(charIDToTypeID('Top '))
+                        bounds.getUnitDoubleValue(c2id('Top ')),
+                        bounds.getUnitDoubleValue(c2id('Left')),
+                        bounds.getUnitDoubleValue(c2id('Btom')),
+                        bounds.getUnitDoubleValue(c2id('Rght')),
+                        bounds.getUnitDoubleType(c2id('Top '))
                     );
             },
             set: false,
         },
 
-        'group': { typeId: charIDToTypeID('Grup'), type: DescValueType.BOOLEANTYPE, set: false, },
+        'group': { typeId: c2id('Grup'), type: DescValueType.BOOLEANTYPE, set: false, },
 
-        'hasLayerMask': { typeId: stringIDToTypeID('hasUserMask'), type: DescValueType.BOOLEANTYPE, set: false, },
+        'hasLayerMask': { typeId: s2id('hasUserMask'), type: DescValueType.BOOLEANTYPE, set: false, },
 
         'layerMaskDensity': {
-            typeId: stringIDToTypeID('userMaskDensity'),
+            typeId: s2id('userMaskDensity'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 100.0,
             get: function (prop, layerId, desc)
@@ -458,16 +458,16 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Prc'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Prc'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'layerMaskFeather': {
-            typeId: stringIDToTypeID('userMaskFeather'),
+            typeId: s2id('userMaskFeather'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: new UnitValue(0.0, 'px'),
             get: function (prop, layerId, desc)
@@ -485,18 +485,18 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Pxl'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Pxl'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
-        'hasVectorMask': { typeId: stringIDToTypeID('hasVectorMask'), type: DescValueType.BOOLEANTYPE, set: false, },
+        'hasVectorMask': { typeId: s2id('hasVectorMask'), type: DescValueType.BOOLEANTYPE, set: false, },
 
         'vectorMaskDensity': {
-            typeId: stringIDToTypeID('vectorMaskDensity'),
+            typeId: s2id('vectorMaskDensity'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 100.0,
             get: function (prop, layerId, desc)
@@ -514,16 +514,16 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Prc'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Prc'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'vectorMaskFeather': {
-            typeId: stringIDToTypeID('vectorMaskFeather'),
+            typeId: s2id('vectorMaskFeather'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: new UnitValue(0.0, 'px'),
             get: function (prop, layerId, desc)
@@ -541,18 +541,18 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Pxl'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Pxl'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
-        'hasFilterMask': { typeId: stringIDToTypeID('hasFilterMask'), type: DescValueType.BOOLEANTYPE, set: false, },
+        'hasFilterMask': { typeId: s2id('hasFilterMask'), type: DescValueType.BOOLEANTYPE, set: false, },
 
         'filterMaskDensity': {
-            typeId: stringIDToTypeID('filterMaskDensity'),
+            typeId: s2id('filterMaskDensity'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: 100.0,
             get: function (prop, layerId, desc)
@@ -570,16 +570,16 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Prc'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Prc'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'filterMaskFeather': {
-            typeId: stringIDToTypeID('filterMaskFeather'),
+            typeId: s2id('filterMaskFeather'),
             type: DescValueType.UNITDOUBLE,
             defaultValue: new UnitValue(0.0, 'px'),
             get: function (prop, layerId, desc)
@@ -597,21 +597,21 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
                 var desc2 = new ActionDescriptor();
-                desc2.putUnitDouble(prop.typeId, charIDToTypeID('#Pxl'), value);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc2.putUnitDouble(prop.typeId, c2id('#Pxl'), value);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'allLocked': {
-            typeId: stringIDToTypeID('layerLocking'),
+            typeId: s2id('layerLocking'),
             type: DescValueType.BOOLEANTYPE,
             defaultValue: false,
             get: function (prop, layerId, desc)
             {
-                return desc.getObjectValue(prop.typeId).getBoolean(stringIDToTypeID('protectAll'));
+                return desc.getObjectValue(prop.typeId).getBoolean(s2id('protectAll'));
             },
             set: function (prop, layerId, value)
             {
@@ -636,28 +636,28 @@
                         var ref = new ActionReference();
                         _getLayerIdRef(layerId, ref);
                         var desc = new ActionDescriptor();
-                        desc.putReference(charIDToTypeID('null'), ref);
+                        desc.putReference(c2id('null'), ref);
 
                         // Set lock object
                         var lock = new ActionDescriptor();
-                        lock.putBoolean(stringIDToTypeID('protectAll'), value);
+                        lock.putBoolean(s2id('protectAll'), value);
 
                         var desc2 = new ActionDescriptor();
                         desc2.putObject(prop.typeId, prop.typeId, lock);
-                        desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                        desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                        executeAction(c2id('setd'), desc, _dialogModesNo);
                     });
                 }
             },
         },
 
         'pixelsLocked': {
-            typeId: stringIDToTypeID('layerLocking'),
+            typeId: s2id('layerLocking'),
             type: DescValueType.BOOLEANTYPE,
             defaultValue: false,
             get: function (prop, layerId, desc)
             {
-                return desc.getObjectValue(prop.typeId).getBoolean(stringIDToTypeID('protectComposite'));
+                return desc.getObjectValue(prop.typeId).getBoolean(s2id('protectComposite'));
             },
             set: function (prop, layerId, value)
             {
@@ -670,26 +670,26 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
 
                 // Set lock object
                 var lock = new ActionDescriptor();
-                lock.putBoolean(stringIDToTypeID('protectComposite'), value);
+                lock.putBoolean(s2id('protectComposite'), value);
 
                 var desc2 = new ActionDescriptor();
                 desc2.putObject(prop.typeId, prop.typeId, lock);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'positionLocked': {
-            typeId: stringIDToTypeID('layerLocking'),
+            typeId: s2id('layerLocking'),
             type: DescValueType.BOOLEANTYPE,
             defaultValue: false,
             get: function (prop, layerId, desc)
             {
-                return desc.getObjectValue(prop.typeId).getBoolean(stringIDToTypeID('protectPosition'));
+                return desc.getObjectValue(prop.typeId).getBoolean(s2id('protectPosition'));
             },
             set: function (prop, layerId, value)
             {
@@ -702,26 +702,26 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
 
                 // Set lock object
                 var lock = new ActionDescriptor();
-                lock.putBoolean(stringIDToTypeID('protectPosition'), value);
+                lock.putBoolean(s2id('protectPosition'), value);
 
                 var desc2 = new ActionDescriptor();
                 desc2.putObject(prop.typeId, prop.typeId, lock);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'transparentPixelsLocked': {
-            typeId: stringIDToTypeID('layerLocking'),
+            typeId: s2id('layerLocking'),
             type: DescValueType.BOOLEANTYPE,
             defaultValue: false,
             get: function (prop, layerId, desc)
             {
-                return desc.getObjectValue(prop.typeId).getBoolean(stringIDToTypeID('protectTransparency'));
+                return desc.getObjectValue(prop.typeId).getBoolean(s2id('protectTransparency'));
             },
             set: function (prop, layerId, value)
             {
@@ -734,21 +734,21 @@
                 var ref = new ActionReference();
                 _getLayerIdRef(layerId, ref);
                 var desc = new ActionDescriptor();
-                desc.putReference(charIDToTypeID('null'), ref);
+                desc.putReference(c2id('null'), ref);
 
                 // Set lock object
                 var lock = new ActionDescriptor();
-                lock.putBoolean(stringIDToTypeID('protectTransparency'), value);
+                lock.putBoolean(s2id('protectTransparency'), value);
 
                 var desc2 = new ActionDescriptor();
                 desc2.putObject(prop.typeId, prop.typeId, lock);
-                desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), desc2);
-                executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+                desc.putObject(c2id('T   '), c2id('Lyr '), desc2);
+                executeAction(c2id('setd'), desc, _dialogModesNo);
             },
         },
 
         'isBackgroundLayer': {
-            typeId: charIDToTypeID('Bckg'),
+            typeId: c2id('Bckg'),
             type: DescValueType.BOOLEANTYPE,
             get: function (prop, layerId, desc)
             {
@@ -757,15 +757,15 @@
             set: false,
         },
 
-        'xmpMetadata': { typeId: stringIDToTypeID('metadata'), type: DescValueType.OBJECTTYPE, set: false, },
+        'xmpMetadata': { typeId: s2id('metadata'), type: DescValueType.OBJECTTYPE, set: false, },
 
         'lastModified': {
-            typeId: stringIDToTypeID('metadata'), // lastModified is a child of xmpMetadata
+            typeId: s2id('metadata'), // lastModified is a child of xmpMetadata
             type: DescValueType.DOUBLETYPE,
             get: function (prop, layerId, desc)
             {
                 var lastModified = new Date();
-                lastModified.setTime(desc.getObjectValue(prop.typeId).getDouble(stringIDToTypeID('layerTime')) * 1000.0); // Time is stored in seconds
+                lastModified.setTime(desc.getObjectValue(prop.typeId).getDouble(s2id('layerTime')) * 1000.0); // Time is stored in seconds
                 return lastModified;
             },
             set: false,
@@ -784,9 +784,9 @@
 
         // Get base count
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('NmbL'));
-        ref.putEnumerated(charIDToTypeID('Dcmn'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
-        var count = executeActionGet(ref).getInteger(charIDToTypeID('NmbL'));
+        ref.putProperty(c2id('Prpr'), c2id('NmbL'));
+        ref.putEnumerated(c2id('Dcmn'), c2id('Ordn'), c2id('Trgt'));
+        var count = executeActionGet(ref).getInteger(c2id('NmbL'));
 
         // If document has background, add 1 to layer count
         if (count > 0)
@@ -799,9 +799,9 @@
             else
             {
                 ref = new ActionReference();
-                ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('Bckg'));
-                ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Back'));
-                if (executeActionGet(ref).getBoolean(charIDToTypeID('Bckg')))
+                ref.putProperty(c2id('Prpr'), c2id('Bckg'));
+                ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Back'));
+                if (executeActionGet(ref).getBoolean(c2id('Bckg')))
                     count++;
             }
         }
@@ -816,9 +816,9 @@
     layers.getLayerIdByItemIndex = function (itemIndex)
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('LyrI'));
+        ref.putProperty(c2id('Prpr'), c2id('LyrI'));
         _getItemIndexRef(itemIndex, ref);
-        return executeActionGet(ref).getInteger(charIDToTypeID('LyrI'));
+        return executeActionGet(ref).getInteger(c2id('LyrI'));
     };
 
     /**
@@ -839,9 +839,9 @@
         else
         {
             var ref = new ActionReference();
-            ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('Bckg'));
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Back'));
-            return executeActionGet(ref).getBoolean(charIDToTypeID('Bckg'));
+            ref.putProperty(c2id('Prpr'), c2id('Bckg'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Back'));
+            return executeActionGet(ref).getBoolean(c2id('Bckg'));
         }
     };
 
@@ -856,11 +856,11 @@
     layers.add = function (name, opacity, blendMode, color)
     {
         var ref = new ActionReference();
-        ref.putClass(charIDToTypeID('Lyr '));
+        ref.putClass(c2id('Lyr '));
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putObject(charIDToTypeID('Usng'), charIDToTypeID('Lyr '), _getMakeLayerDescriptor(name, opacity, blendMode, color));
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putObject(c2id('Usng'), c2id('Lyr '), _getMakeLayerDescriptor(name, opacity, blendMode, color));
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -875,11 +875,11 @@
     layers.addLayerSet = function (name, opacity, blendMode, color)
     {
         var ref = new ActionReference();
-        ref.putClass(stringIDToTypeID('layerSection'));
+        ref.putClass(s2id('layerSection'));
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putObject(charIDToTypeID('Usng'), stringIDToTypeID('layerSection'), _getMakeLayerDescriptor(name, opacity, blendMode, color));
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putObject(c2id('Usng'), s2id('layerSection'), _getMakeLayerDescriptor(name, opacity, blendMode, color));
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -893,8 +893,8 @@
         var ref = new ActionReference();
         _getLayerIdRef(layerId, ref);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('Dlt '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('Dlt '), desc, _dialogModesNo);
 
         // Chaining
         return layers;
@@ -915,11 +915,11 @@
             return;
 
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Lyr '), charIDToTypeID('Bckg'));
+        ref.putProperty(c2id('Lyr '), c2id('Bckg'));
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putObject(charIDToTypeID('T   '), charIDToTypeID('Lyr '), _getMakeLayerDescriptor(name, opacity, blendMode, color));
-        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putObject(c2id('T   '), c2id('Lyr '), _getMakeLayerDescriptor(name, opacity, blendMode, color));
+        executeAction(c2id('setd'), desc, _dialogModesNo);
     };
 
     /**
@@ -932,7 +932,7 @@
         if (typeof layerId === 'number')
             layers.stack.makeActive(layerId);
 
-        executeAction(stringIDToTypeID('newPlacedLayer'), undefined, _dialogModesNo);
+        executeAction(s2id('newPlacedLayer'), undefined, _dialogModesNo);
         return layers;
     };
 
@@ -949,17 +949,17 @@
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
+        desc.putReference(c2id('null'), ref);
 
         if (documentId)
         {
             var ref2 = new ActionReference();
-            ref.putIdentifier(charIDToTypeID('Dcmn'), documentId);
-            desc.putReference(charIDToTypeID('T   '), ref2);
+            ref.putIdentifier(c2id('Dcmn'), documentId);
+            desc.putReference(c2id('T   '), ref2);
         }
 
-        desc.putInteger(charIDToTypeID('Vrsn'), 5);
-        executeAction(charIDToTypeID('Dplc'), desc, _dialogModesNo);
+        desc.putInteger(c2id('Vrsn'), 5);
+        executeAction(c2id('Dplc'), desc, _dialogModesNo);
 
         // Chaining
         return layers;
@@ -1015,11 +1015,11 @@
         // Apply image
         // Source
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), sourceChannel.valueOf());
+        ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), sourceChannel.valueOf());
 
         if (sourceLayerId === 'merged')
         {
-            ref.putEnumerated(charIDToTypeID('Lyr '), charIDToTypeID('Ordn'), charIDToTypeID('Mrgd'));
+            ref.putEnumerated(c2id('Lyr '), c2id('Ordn'), c2id('Mrgd'));
         }
         else
         {
@@ -1028,26 +1028,26 @@
             Lifter.documents.makeActive(sourceDocId);
 
             if (layers.prop('isBackgroundLayer'))
-                ref.putProperty(charIDToTypeID('Lyr '), charIDToTypeID('Bckg'));
+                ref.putProperty(c2id('Lyr '), c2id('Bckg'));
             else
-                ref.putIdentifier(charIDToTypeID('Lyr '), sourceLayerId);
+                ref.putIdentifier(c2id('Lyr '), sourceLayerId);
 
             Lifter.documents.makeActive(activeDocId);
         }
 
-        ref.putIdentifier(charIDToTypeID('Dcmn'), sourceDocumentId);
+        ref.putIdentifier(c2id('Dcmn'), sourceDocumentId);
 
         var desc2 = new ActionDescriptor();
-        desc2.putReference(charIDToTypeID('T   '), ref);
-        desc2.putEnumerated(charIDToTypeID('Clcl'), charIDToTypeID('Clcn'), blendMode.valueOf());
-        desc2.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
-        desc2.putBoolean(charIDToTypeID('PrsT'), preserveTransparency);
-        desc2.putBoolean(charIDToTypeID('Invr'), invert);
+        desc2.putReference(c2id('T   '), ref);
+        desc2.putEnumerated(c2id('Clcl'), c2id('Clcn'), blendMode.valueOf());
+        desc2.putUnitDouble(c2id('Opct'), c2id('#Prc'), opacity);
+        desc2.putBoolean(c2id('PrsT'), preserveTransparency);
+        desc2.putBoolean(c2id('Invr'), invert);
 
         var desc = new ActionDescriptor();
-        desc.putObject(charIDToTypeID('With'), charIDToTypeID('Clcl'), desc2);
+        desc.putObject(c2id('With'), c2id('Clcl'), desc2);
 
-        executeAction(charIDToTypeID('AppI'), desc, _dialogModesNo);
+        executeAction(c2id('AppI'), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1061,7 +1061,7 @@
         if (typeof layerId === 'number')
             layers.stack.makeActive(layerId);
 
-        executeAction(charIDToTypeID('Invr'), undefined, _dialogModesNo);
+        executeAction(c2id('Invr'), undefined, _dialogModesNo);
         return layers;
     }
 
@@ -1093,18 +1093,18 @@
 
         // Apply fill
         var desc = new ActionDescriptor();
-        desc.putEnumerated(charIDToTypeID('Usng'), charIDToTypeID('FlCn'), charIDToTypeID('Clr '));
+        desc.putEnumerated(c2id('Usng'), c2id('FlCn'), c2id('Clr '));
 
         var desc2 = new ActionDescriptor();
-        desc2.putUnitDouble(charIDToTypeID('H   '), charIDToTypeID('#Ang'), fillColor.hsb.hue);
-        desc2.putDouble(charIDToTypeID('Strt'), fillColor.hsb.saturation);
-        desc2.putDouble(charIDToTypeID('Brgh'), fillColor.hsb.brightness);
-        desc.putObject(charIDToTypeID('Clr '), charIDToTypeID('HSBC'), desc2);
+        desc2.putUnitDouble(c2id('H   '), c2id('#Ang'), fillColor.hsb.hue);
+        desc2.putDouble(c2id('Strt'), fillColor.hsb.saturation);
+        desc2.putDouble(c2id('Brgh'), fillColor.hsb.brightness);
+        desc.putObject(c2id('Clr '), c2id('HSBC'), desc2);
 
-        desc.putUnitDouble(charIDToTypeID('Opct'), charIDToTypeID('#Prc'), opacity);
-        desc.putEnumerated(charIDToTypeID('Md  '), charIDToTypeID('BlnM'), blendMode.valueOf());
+        desc.putUnitDouble(c2id('Opct'), c2id('#Prc'), opacity);
+        desc.putEnumerated(c2id('Md  '), c2id('BlnM'), blendMode.valueOf());
 
-        executeAction(charIDToTypeID('Fl  '), desc, _dialogModesNo);
+        executeAction(c2id('Fl  '), desc, _dialogModesNo);
 
         return layers;
     };
@@ -1194,7 +1194,7 @@
             ref = new ActionReference();
             _getLayerIdRef(layerId, ref);
             desc = executeActionGet(ref);
-            return _getWrappedActionDescriptor(desc, layers.supportedProperties, layerId || desc.getInteger(charIDToTypeID('LyrI')));
+            return _getWrappedActionDescriptor(desc, layers.supportedProperties, layerId || desc.getInteger(c2id('LyrI')));
         }
         else
         {
@@ -1211,7 +1211,7 @@
                 ref = new ActionReference();
 
                 if (prop.typeId)
-                    ref.putProperty(charIDToTypeID('Prpr'), prop.typeId);
+                    ref.putProperty(c2id('Prpr'), prop.typeId);
 
                 _getLayerIdRef(layerId, ref);
                 desc = executeActionGet(ref);
@@ -1289,25 +1289,25 @@
      * Gets the identifier of the front layer.
      * @return {Number} LayerId of the front layer.
      */
-    layers.stack.getFrontLayerId = _getStackId.bind(null, charIDToTypeID('Frnt'));
+    layers.stack.getFrontLayerId = _getStackId.bind(null, c2id('Frnt'));
 
     /**
      * Gets the identifier of the bottom/background layer.
      * @return {Number} LayerId of the bottom layer.
      */
-    layers.stack.getBottomLayerId = _getStackId.bind(null, charIDToTypeID('Back'));
+    layers.stack.getBottomLayerId = _getStackId.bind(null, c2id('Back'));
 
     /**
      * Gets the identifier of the layer following the currently active one.
      * @return {Number} LayerId of the next layer.
      */
-    layers.stack.getNextLayerId = _getStackId.bind(null, charIDToTypeID('Frwr'));
+    layers.stack.getNextLayerId = _getStackId.bind(null, c2id('Frwr'));
 
     /**
      * Gets the identifier of the layer preceding the currently active one.
      * @return {Number} LayerId of the previous layer.
      */
-    layers.stack.getPreviousLayerId = _getStackId.bind(null, charIDToTypeID('Bckw'));
+    layers.stack.getPreviousLayerId = _getStackId.bind(null, c2id('Bckw'));
 
     /**
      * Sets the currently active layer to the one identified by the passed LayerId.
@@ -1323,11 +1323,11 @@
         typeof makeVisible === 'boolean' || (makeVisible = false);
 
         var ref = new ActionReference();
-        ref.putIdentifier(charIDToTypeID('Lyr '), layerId);
+        ref.putIdentifier(c2id('Lyr '), layerId);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putBoolean(charIDToTypeID('MkVs'), makeVisible);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putBoolean(c2id('MkVs'), makeVisible);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1335,25 +1335,25 @@
      * Sets the currently active layer to the front layer.
      * @return Chained reference to layer utilities.
      */
-    layers.stack.makeFrontActive = _traverseStack.bind(null, charIDToTypeID('Frnt'));
+    layers.stack.makeFrontActive = _traverseStack.bind(null, c2id('Frnt'));
 
     /**
      * Sets the currently active layer to the bottom/background layer.
      * @return Chained reference to layer utilities.
      */
-    layers.stack.makeBottomActive = _traverseStack.bind(null, charIDToTypeID('Back'));
+    layers.stack.makeBottomActive = _traverseStack.bind(null, c2id('Back'));
 
     /**
      * Sets the currently active layer to the one following the currently active layer.
      * @return Chained reference to layer utilities.
      */
-    layers.stack.makeNextActive = _traverseStack.bind(null, charIDToTypeID('Frwr'));
+    layers.stack.makeNextActive = _traverseStack.bind(null, c2id('Frwr'));
 
     /**
      * Sets the currently active layer to the one preceding the currently active layer.
      * @return Chained reference to layer utilities.
      */
-    layers.stack.makePreviousActive = _traverseStack.bind(null, charIDToTypeID('Bckw'));
+    layers.stack.makePreviousActive = _traverseStack.bind(null, c2id('Bckw'));
 
 
     // Masks
@@ -1381,13 +1381,13 @@
         layers.stack.makeActive(layerId);
 
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), charIDToTypeID('Msk '));
+        ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('Msk '));
 
         var desc = new ActionDescriptor();
-        desc.putClass(charIDToTypeID('Nw  '), charIDToTypeID('Chnl'));
-        desc.putReference(charIDToTypeID('At  '), ref);
-        desc.putEnumerated(charIDToTypeID('Usng'), charIDToTypeID('UsrM'), charIDToTypeID('RvlA'));
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        desc.putClass(c2id('Nw  '), c2id('Chnl'));
+        desc.putReference(c2id('At  '), ref);
+        desc.putEnumerated(c2id('Usng'), c2id('UsrM'), c2id('RvlA'));
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1410,16 +1410,16 @@
         layers.stack.makeActive(layerId);
 
         var ref = new ActionReference();
-        ref.putClass(charIDToTypeID('Path'));
+        ref.putClass(c2id('Path'));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
+        desc.putReference(c2id('null'), ref);
 
         var ref2 = new ActionReference();
-        ref2.putEnumerated(charIDToTypeID('Path'), charIDToTypeID('Path'), stringIDToTypeID('vectorMask'));
-        desc.putReference(charIDToTypeID('At  '), ref2);
-        desc.putEnumerated(charIDToTypeID('Usng'), stringIDToTypeID('vectorMaskEnabled'), charIDToTypeID('RvlA'));
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        ref2.putEnumerated(c2id('Path'), c2id('Path'), s2id('vectorMask'));
+        desc.putReference(c2id('At  '), ref2);
+        desc.putEnumerated(c2id('Usng'), s2id('vectorMaskEnabled'), c2id('RvlA'));
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1445,13 +1445,13 @@
         }
 
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), charIDToTypeID('Msk '));
+        ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('Msk '));
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putBoolean(charIDToTypeID('Aply'), apply);
-        executeAction(charIDToTypeID('Dlt '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putBoolean(c2id('Aply'), apply);
+        executeAction(c2id('Dlt '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1463,12 +1463,12 @@
     layers.masks.removeVectorMask = function (layerId)
     {
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Path'), charIDToTypeID('Path'), stringIDToTypeID('vectorMask'));
+        ref.putEnumerated(c2id('Path'), c2id('Path'), s2id('vectorMask'));
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('Dlt '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('Dlt '), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1492,17 +1492,17 @@
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
+        desc.putReference(c2id('null'), ref);
 
-        desc.putUnitDouble(stringIDToTypeID('refineEdgeBorderRadius'), charIDToTypeID('#Pxl'), Math.abs(edgeBorderRadius));
-        desc.putUnitDouble(stringIDToTypeID('refineEdgeBorderContrast'), idPrc, Math.abs(edgeBorderContrast));
-        desc.putInteger(stringIDToTypeID('refineEdgeSmooth'), Math.abs(Math.ceil(edgeSmooth)));
-        desc.putUnitDouble(stringIDToTypeID('refineEdgeFeatherRadius'), charIDToTypeID('#Pxl'), Math.abs(edgeFeatherRadius));
-        desc.putUnitDouble(stringIDToTypeID('refineEdgeChoke'), charIDToTypeID('#Prc'), Math.abs(edgeChoke));
-        desc.putBoolean(stringIDToTypeID('refineEdgeAutoRadius'), edgeAutoRadius);
-        desc.putBoolean(stringIDToTypeID('refineEdgeDecontaminate'), edgeDecontaminate);
-        desc.putEnumerated(stringIDToTypeID('refineEdgeOutput'), stringIDToTypeID('refineEdgeOutput'), stringIDToTypeID('refineEdgeOutputUserMask'));
-        executeAction(stringIDToTypeID('refineSelectionEdge'), desc, _dialogModesNo);
+        desc.putUnitDouble(s2id('refineEdgeBorderRadius'), c2id('#Pxl'), Math.abs(edgeBorderRadius));
+        desc.putUnitDouble(s2id('refineEdgeBorderContrast'), idPrc, Math.abs(edgeBorderContrast));
+        desc.putInteger(s2id('refineEdgeSmooth'), Math.abs(Math.ceil(edgeSmooth)));
+        desc.putUnitDouble(s2id('refineEdgeFeatherRadius'), c2id('#Pxl'), Math.abs(edgeFeatherRadius));
+        desc.putUnitDouble(s2id('refineEdgeChoke'), c2id('#Prc'), Math.abs(edgeChoke));
+        desc.putBoolean(s2id('refineEdgeAutoRadius'), edgeAutoRadius);
+        desc.putBoolean(s2id('refineEdgeDecontaminate'), edgeDecontaminate);
+        desc.putEnumerated(s2id('refineEdgeOutput'), s2id('refineEdgeOutput'), s2id('refineEdgeOutputUserMask'));
+        executeAction(s2id('refineSelectionEdge'), desc, _dialogModesNo);
 
         // Chaining
         return layers;
@@ -1531,13 +1531,13 @@
         }
 
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), charIDToTypeID('Msk '));
+        ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('Msk '));
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putBoolean(charIDToTypeID('MkVs'), makeVisible ? true : false);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putBoolean(c2id('MkVs'), makeVisible ? true : false);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1566,22 +1566,22 @@
         if (active)
         {
             ref = new ActionReference();
-            ref.putEnumerated(charIDToTypeID('Path'), charIDToTypeID('Path'), stringIDToTypeID('vectorMask'));
+            ref.putEnumerated(c2id('Path'), c2id('Path'), s2id('vectorMask'));
             _getLayerIdRef(layerId, ref);
 
             desc = new ActionDescriptor();
-            desc.putReference(charIDToTypeID('null'), ref);
-            executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+            desc.putReference(c2id('null'), ref);
+            executeAction(c2id('slct'), desc, _dialogModesNo);
         }
         else
         {
             ref = new ActionReference();
-            ref.putClass(charIDToTypeID('Path'));
+            ref.putClass(c2id('Path'));
             _getLayerIdRef(layerId, ref);
 
             desc = new ActionDescriptor();
-            desc.putReference(charIDToTypeID('null'), ref);
-            executeAction(charIDToTypeID('Dslc'), desc, _dialogModesNo);
+            desc.putReference(c2id('null'), ref);
+            executeAction(c2id('Dslc'), desc, _dialogModesNo);
         }
 
         return layers;
@@ -1610,13 +1610,13 @@
         }
 
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), charIDToTypeID('RGB '));
+        ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('RGB '));
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putBoolean(charIDToTypeID('MkVs'), makeVisible);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putBoolean(c2id('MkVs'), makeVisible);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
 
         // Chaining
         return layers;
@@ -1630,16 +1630,16 @@
     layers.masks.selectLayerMask = function (layerId)
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Chnl'), charIDToTypeID('fsel'));
+        ref.putProperty(c2id('Chnl'), c2id('fsel'));
 
         var ref2 = new ActionReference();
-        ref2.putEnumerated(charIDToTypeID('Chnl'), charIDToTypeID('Chnl'), charIDToTypeID('Msk '));
+        ref2.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('Msk '));
         _getLayerIdRef(layerId, ref);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putReference(charIDToTypeID('T   '), ref2);
-        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putReference(c2id('T   '), ref2);
+        executeAction(c2id('setd'), desc, _dialogModesNo);
         return layers;
     };
 
@@ -1651,19 +1651,19 @@
     layers.masks.selectVectorMask = function (layerId)
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Chnl'), charIDToTypeID('fsel'));
+        ref.putProperty(c2id('Chnl'), c2id('fsel'));
 
         var ref2 = new ActionReference();
-        ref2.putEnumerated(charIDToTypeID('Path'), charIDToTypeID('Path'), stringIDToTypeID('vectorMask'));
+        ref2.putEnumerated(c2id('Path'), c2id('Path'), s2id('vectorMask'));
         _getLayerIdRef(layerId, ref2);
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putReference(charIDToTypeID('T   '), ref2);
+        desc.putReference(c2id('null'), ref);
+        desc.putReference(c2id('T   '), ref2);
 
-        desc.putInteger(charIDToTypeID('Vrsn'), 1);
-        desc.putBoolean(stringIDToTypeID('vectorMaskParams'), true);
-        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+        desc.putInteger(c2id('Vrsn'), 1);
+        desc.putBoolean(s2id('vectorMaskParams'), true);
+        executeAction(c2id('setd'), desc, _dialogModesNo);
         return layers;
     };
 

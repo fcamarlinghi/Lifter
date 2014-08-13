@@ -25,11 +25,11 @@
     selection.selectAll = function ()
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Chnl'), charIDToTypeID('fsel'));
+        ref.putProperty(c2id('Chnl'), c2id('fsel'));
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putEnumerated(charIDToTypeID('T   '), charIDToTypeID('Ordn'), charIDToTypeID('Al  '));
-        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putEnumerated(c2id('T   '), c2id('Ordn'), c2id('Al  '));
+        executeAction(c2id('setd'), desc, _dialogModesNo);
         return selection;
     };
 
@@ -41,9 +41,9 @@
     selection.copy = function (merged)
     {
         if (merged)
-            executeAction(charIDToTypeID('CpyM'), undefined, _dialogModesNo);
+            executeAction(c2id('CpyM'), undefined, _dialogModesNo);
         else
-            executeAction(charIDToTypeID('copy'), undefined, _dialogModesNo);
+            executeAction(c2id('copy'), undefined, _dialogModesNo);
         return selection;
     };
 
@@ -54,8 +54,8 @@
     selection.paste = function ()
     {
         var desc = new ActionDescriptor();
-        desc.putEnumerated(charIDToTypeID('AntA'), charIDToTypeID('Annt'), charIDToTypeID('Anno'));
-        executeAction(charIDToTypeID('past'), desc, _dialogModesNo);
+        desc.putEnumerated(c2id('AntA'), c2id('Annt'), c2id('Anno'));
+        executeAction(c2id('past'), desc, _dialogModesNo);
         return selection;
     };
 
@@ -66,8 +66,8 @@
     selection.pasteInto = function ()
     {
         var desc = new ActionDescriptor();
-        desc.putEnumerated(charIDToTypeID('AntA'), charIDToTypeID('Annt'), charIDToTypeID('Anno'));
-        executeAction(charIDToTypeID('PstI'), desc, _dialogModesNo);
+        desc.putEnumerated(c2id('AntA'), c2id('Annt'), c2id('Anno'));
+        executeAction(c2id('PstI'), desc, _dialogModesNo);
         return selection;
     };
 
@@ -78,8 +78,8 @@
     selection.pasteOutside = function ()
     {
         var desc = new ActionDescriptor();
-        desc.putEnumerated(charIDToTypeID('AntA'), charIDToTypeID('Annt'), charIDToTypeID('Anno'));
-        executeAction(charIDToTypeID('PstO'), desc, _dialogModesNo);
+        desc.putEnumerated(c2id('AntA'), c2id('Annt'), c2id('Anno'));
+        executeAction(c2id('PstO'), desc, _dialogModesNo);
         return selection;
     };
 
@@ -92,14 +92,14 @@
     {
         // Create document
         var desc = new ActionDescriptor();
-        desc.putString(stringIDToTypeID('preset'), "Clipboard");
+        desc.putString(s2id('preset'), "Clipboard");
 
         if (typeof name === 'string' && name.length)
-            desc3.putString(charIDToTypeID('Nm  '), name);
+            desc3.putString(c2id('Nm  '), name);
 
         var desc2 = new ActionDescriptor();
-        desc2.putObject(charIDToTypeID('Nw  '), charIDToTypeID('Dcmn'), desc);
-        executeAction(charIDToTypeID('Mk  '), desc2, _dialogModesNo);
+        desc2.putObject(c2id('Nw  '), c2id('Dcmn'), desc);
+        executeAction(c2id('Mk  '), desc2, _dialogModesNo);
 
         // Paste clipboard data
         selection.paste();
@@ -117,7 +117,7 @@
      */
     selection.clear = function ()
     {
-        executeAction(charIDToTypeID('Dlt '), undefined, _dialogModesNo);
+        executeAction(c2id('Dlt '), undefined, _dialogModesNo);
         return selection;
     };
 
@@ -128,11 +128,11 @@
     selection.deselect = function ()
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Chnl'), charIDToTypeID('fsel'));
+        ref.putProperty(c2id('Chnl'), c2id('fsel'));
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putEnumerated(charIDToTypeID('T   '), charIDToTypeID('Ordn'), charIDToTypeID('None'));
-        executeAction(charIDToTypeID('setd'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putEnumerated(c2id('T   '), c2id('Ordn'), c2id('None'));
+        executeAction(c2id('setd'), desc, _dialogModesNo);
         return selection;
     };
 

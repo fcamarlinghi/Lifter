@@ -24,12 +24,12 @@
         if (typeof historyId !== 'number')
         {
             // If historyId is not passed, assume current history state
-            ref.putEnumerated(charIDToTypeID('HstS'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
+            ref.putEnumerated(c2id('HstS'), c2id('Ordn'), c2id('Trgt'));
         }
         else
         {
             // Use historyId directly
-            ref.putIdentifier(charIDToTypeID('HstS'), historyId);
+            ref.putIdentifier(c2id('HstS'), historyId);
         }
     };
 
@@ -37,10 +37,10 @@
     function _traverseHistory(direction)
     {
         var ref = new ActionReference();
-        ref.putEnumerated(charIDToTypeID('HstS'), charIDToTypeID('Ordn'), direction);
+        ref.putEnumerated(c2id('HstS'), c2id('Ordn'), direction);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
         return this;
     };
 
@@ -50,32 +50,32 @@
     */
     history.supportedProperties = {
         'itemIndex': {
-            typeId: charIDToTypeID('ItmI'),
+            typeId: c2id('ItmI'),
             type: DescValueType.INTEGERTYPE,
             set: false,
         },
         'historyId': {
-            typeId: charIDToTypeID('Idnt'),
+            typeId: c2id('Idnt'),
             type: DescValueType.INTEGERTYPE,
             set: false,
         },
         'name': {
-            typeId: charIDToTypeID('Nm  '),
+            typeId: c2id('Nm  '),
             type: DescValueType.STRINGTYPE,
             set: false,
         },
         'auto': {
-            typeId: charIDToTypeID('Auto'),
+            typeId: c2id('Auto'),
             type: DescValueType.BOOLEANTYPE,
             set: false,
         },
         'historyBrushSource': {
-            typeId: charIDToTypeID('HstB'),
+            typeId: c2id('HstB'),
             type: DescValueType.BOOLEANTYPE,
             set: false,
         },
         'currentHistoryState': {
-            typeId: charIDToTypeID('CrnH'),
+            typeId: c2id('CrnH'),
             type: DescValueType.BOOLEANTYPE,
             set: false,
         },
@@ -88,9 +88,9 @@
     history.count = function ()
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('Cnt '));
-        ref.putEnumerated(charIDToTypeID('HstS'), charIDToTypeID('Ordn'), charIDToTypeID('Trgt'));
-        return executeActionGet(ref).getInteger(charIDToTypeID('Cnt '));
+        ref.putProperty(c2id('Prpr'), c2id('Cnt '));
+        ref.putEnumerated(c2id('HstS'), c2id('Ordn'), c2id('Trgt'));
+        return executeActionGet(ref).getInteger(c2id('Cnt '));
     };
 
     /**
@@ -101,9 +101,9 @@
     history.getHistoryIdFromItemIndex = function (itemIndex)
     {
         var ref = new ActionReference();
-        ref.putProperty(charIDToTypeID('Prpr'), charIDToTypeID('Idnt'));
-        ref.putIndex(charIDToTypeID('HstS'), itemIndex);
-        return executeActionGet(ref).getInteger(charIDToTypeID('Idnt'));
+        ref.putProperty(c2id('Prpr'), c2id('Idnt'));
+        ref.putIndex(c2id('HstS'), itemIndex);
+        return executeActionGet(ref).getInteger(c2id('Idnt'));
     };
 
     /**
@@ -190,7 +190,7 @@
             ref = new ActionReference();
             _getHistoryIdRef(historyId, ref);
             desc = executeActionGet(ref);
-            return _getWrappedActionDescriptor(desc, history.supportedProperties, historyId || desc.getInteger(charIDToTypeID('Idnt')));
+            return _getWrappedActionDescriptor(desc, history.supportedProperties, historyId || desc.getInteger(c2id('Idnt')));
         }
         else
         {
@@ -207,7 +207,7 @@
                 ref = new ActionReference();
 
                 if (prop.typeId)
-                    ref.putProperty(charIDToTypeID('Prpr'), prop.typeId);
+                    ref.putProperty(c2id('Prpr'), prop.typeId);
 
                 _getHistoryIdRef(historyId, ref);
                 desc = executeActionGet(ref);
@@ -271,10 +271,10 @@
             throw new Error(['Invalid history state identifier: "', historyId, '".'].join(''));
 
         var ref = new ActionReference();
-        ref.putIdentifier(charIDToTypeID('HstS'), historyId);
+        ref.putIdentifier(c2id('HstS'), historyId);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
         return this;
     };
 
@@ -289,10 +289,10 @@
             throw new Error(['Invalid history state offset: "', offset, '".'].join(''));
 
         var ref = new ActionReference();
-        ref.putOffset(charIDToTypeID('HstS'), offset);
+        ref.putOffset(c2id('HstS'), offset);
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('slct'), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('slct'), desc, _dialogModesNo);
         return this;
     };
 
@@ -300,25 +300,25 @@
      * Sets the currently active history state to the previous one in the stack.
      * @return Chained reference to history utilities.
      */
-    history.makePreviousActive = _traverseHistory.bind(null, charIDToTypeID('Prvs'));
+    history.makePreviousActive = _traverseHistory.bind(null, c2id('Prvs'));
 
     /**
      * Sets the currently active history state to the next one in the stack.
      * @return Chained reference to history utilities.
      */
-    history.makeNextActive = _traverseHistory.bind(null, charIDToTypeID('Nxt '));
+    history.makeNextActive = _traverseHistory.bind(null, c2id('Nxt '));
 
     /**
      * Sets the currently active history state to the first one in the stack.
      * @return Chained reference to history utilities.
      */
-    history.makeFirstActive = _traverseHistory.bind(null, charIDToTypeID('Frst'));
+    history.makeFirstActive = _traverseHistory.bind(null, c2id('Frst'));
 
     /**
      * Sets the currently active history state to the last one in the stack.
      * @return Chained reference to history utilities.
      */
-    history.makeLastActive = _traverseHistory.bind(null, charIDToTypeID('Lst '));
+    history.makeLastActive = _traverseHistory.bind(null, c2id('Lst '));
 
     /**
      * Duplicates the currently active history state, creating a new document from it.
@@ -327,15 +327,15 @@
     history.duplicate = function ()
     {
         var ref = new ActionReference();
-        ref.putClass(charIDToTypeID('Dcmn'));
+        ref.putClass(c2id('Dcmn'));
 
         var ref2 = new ActionReference();
-        ref2.putProperty(charIDToTypeID('HstS'), charIDToTypeID('CrnH'));
+        ref2.putProperty(c2id('HstS'), c2id('CrnH'));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putReference(charIDToTypeID('Usng'), ref2);
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        desc.putReference(c2id('Usng'), ref2);
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return this;
     };
 
@@ -349,13 +349,13 @@
         var ref = new ActionReference();
 
         if (typeof historyId === 'number')
-            ref.putIdentifer(charIDToTypeID('HstS'), historyId);
+            ref.putIdentifer(c2id('HstS'), historyId);
         else
-            ref.putProperty(charIDToTypeID('HstS'), charIDToTypeID('CrnH'));
+            ref.putProperty(c2id('HstS'), c2id('CrnH'));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('Dlt '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('Dlt '), desc, _dialogModesNo);
         return history;
     };
 
@@ -367,19 +367,19 @@
     history.createSnapshot = function (snapshotName)
     {
         var ref = new ActionReference();
-        ref.putClass(charIDToTypeID('SnpS'));
+        ref.putClass(c2id('SnpS'));
 
         var ref2 = new ActionReference();
-        ref2.putProperty(charIDToTypeID('HstS'), charIDToTypeID('CrnH'));
+        ref2.putProperty(c2id('HstS'), c2id('CrnH'));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        desc.putReference(charIDToTypeID('From'), ref2);
+        desc.putReference(c2id('null'), ref);
+        desc.putReference(c2id('From'), ref2);
 
         if (typeof snapshotName === 'string' && snapshotName.length)
-            desc.putString(charIDToTypeID('Nm  '), snapshotName);
+            desc.putString(c2id('Nm  '), snapshotName);
 
-        executeAction(charIDToTypeID('Mk  '), desc, _dialogModesNo);
+        executeAction(c2id('Mk  '), desc, _dialogModesNo);
         return this;
     };
 
@@ -407,15 +407,15 @@
             ref = new ActionReference();
 
         if (type === 'string' && snapshot.length)
-            ref.putName(charIDToTypeID('SnpS'), snapshot);
+            ref.putName(c2id('SnpS'), snapshot);
         else if (type === 'number' && snapshot > 0)
-            ref.putIdentifier(charIDToTypeID('SnpS'), snapshot);
+            ref.putIdentifier(c2id('SnpS'), snapshot);
         else
             throw new Error(['Invalid snapshot identifier or name: "', snapshot, '".'].join(''));
 
         var desc = new ActionDescriptor();
-        desc.putReference(charIDToTypeID('null'), ref);
-        executeAction(charIDToTypeID('Dlt '), desc, _dialogModesNo);
+        desc.putReference(c2id('null'), ref);
+        executeAction(c2id('Dlt '), desc, _dialogModesNo);
         return history;
     };
 

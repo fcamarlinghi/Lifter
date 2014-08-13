@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/** Cached reference to DialogModes.NO. */
+var _dialogModesNo = DialogModes.NO,
+
+    /** Shortcut to 'c2id' function. */
+    c2id = charIDToTypeID,
+
+    /** Shortcut to 's2id' function. */
+    s2id = stringIDToTypeID;
+
 // Global public types
 /** 
  * Contains utility methods to deal with Enumerators.
@@ -221,47 +230,47 @@ LayerType.CONTENT = new Enumerator('LayerType.CONTENT', 2);
  * Enumerates layer colors.
  */
 var LayerColor = this.LayerColor = function LayerColor() { };
-LayerColor.NONE = new Enumerator('LayerColor.NONE', charIDToTypeID('None'));
-LayerColor.RED = new Enumerator('LayerColor.RED', charIDToTypeID('Rd  '));
-LayerColor.ORANGE = new Enumerator('LayerColor.ORANGE', charIDToTypeID('Orng'));
-LayerColor.YELLOW = new Enumerator('LayerColor.YELLOW', charIDToTypeID('Ylw '));
-LayerColor.GREEN = new Enumerator('LayerColor.GREEN', charIDToTypeID('Grn '));
-LayerColor.BLUE = new Enumerator('LayerColor.BLUE', charIDToTypeID('Bl  '));
-LayerColor.VIOLET = new Enumerator('LayerColor.VIOLET', charIDToTypeID('Vlt '));
-LayerColor.GRAY = new Enumerator('LayerColor.GRAY', charIDToTypeID('Gry '));
+LayerColor.NONE = new Enumerator('LayerColor.NONE', c2id('None'));
+LayerColor.RED = new Enumerator('LayerColor.RED', c2id('Rd  '));
+LayerColor.ORANGE = new Enumerator('LayerColor.ORANGE', c2id('Orng'));
+LayerColor.YELLOW = new Enumerator('LayerColor.YELLOW', c2id('Ylw '));
+LayerColor.GREEN = new Enumerator('LayerColor.GREEN', c2id('Grn '));
+LayerColor.BLUE = new Enumerator('LayerColor.BLUE', c2id('Bl  '));
+LayerColor.VIOLET = new Enumerator('LayerColor.VIOLET', c2id('Vlt '));
+LayerColor.GRAY = new Enumerator('LayerColor.GRAY', c2id('Gry '));
 
 /**
  * Enumerates blend modes. Acts as an useful proxy to Photoshop BlendMode enumeration.
  */
 var LifterBlendMode = this.LifterBlendMode = function LifterBlendMode() { };
-LifterBlendMode.PASSTHROUGH = new Enumerator('LifterBlendMode.PASSTHROUGH', stringIDToTypeID('passThrough'));
-LifterBlendMode.NORMAL = new Enumerator('LifterBlendMode.NORMAL', charIDToTypeID('Nrml'));
-LifterBlendMode.DISSOLVE = new Enumerator('LifterBlendMode.DISSOLVE', charIDToTypeID('Dslv'));
-LifterBlendMode.DARKEN = new Enumerator('LifterBlendMode.DARKEN', charIDToTypeID('Drkn'));
-LifterBlendMode.MULTIPLY = new Enumerator('LifterBlendMode.MULTIPLY', charIDToTypeID('Mltp'));
-LifterBlendMode.COLORBURN = new Enumerator('LifterBlendMode.COLORBURN', charIDToTypeID('CBrn'));
-LifterBlendMode.LINEARBURN = new Enumerator('LifterBlendMode.LINEARBURN', stringIDToTypeID('linearBurn'));
-LifterBlendMode.DARKERCOLOR = new Enumerator('LifterBlendMode.DARKERCOLOR', stringIDToTypeID('darkerColor'));
-LifterBlendMode.LIGHTEN = new Enumerator('LifterBlendMode.LIGHTEN', charIDToTypeID('Lghn'));
-LifterBlendMode.SCREEN = new Enumerator('LifterBlendMode.SCREEN', charIDToTypeID('Scrn'));
-LifterBlendMode.COLORDODGE = new Enumerator('LifterBlendMode.COLORDODGE', charIDToTypeID('CDdg'));
-LifterBlendMode.LINEARDODGE = new Enumerator('LifterBlendMode.LINEARDODGE', stringIDToTypeID('linearDodge'));
-LifterBlendMode.LIGHTERCOLOR = new Enumerator('LifterBlendMode.LIGHTERCOLOR', stringIDToTypeID('lighterColor'));
-LifterBlendMode.OVERLAY = new Enumerator('LifterBlendMode.OVERLAY', charIDToTypeID('Ovrl'));
-LifterBlendMode.SOFTLIGHT = new Enumerator('LifterBlendMode.SOFTLIGHT', charIDToTypeID('SftL'));
-LifterBlendMode.HARDLIGHT = new Enumerator('LifterBlendMode.HARDLIGHT', charIDToTypeID('HrdL'));
-LifterBlendMode.VIVIDLIGHT = new Enumerator('LifterBlendMode.VIVIDLIGHT', stringIDToTypeID('vividLight'));
-LifterBlendMode.LINEARLIGHT = new Enumerator('LifterBlendMode.LINEARLIGHT', stringIDToTypeID('linearLight'));
-LifterBlendMode.PINLIGHT = new Enumerator('LifterBlendMode.PINLIGHT', stringIDToTypeID('pinLight'));
-LifterBlendMode.HARDMIX = new Enumerator('LifterBlendMode.HARDMIX', stringIDToTypeID('hardMix'));
-LifterBlendMode.DIFFERENCE = new Enumerator('LifterBlendMode.DIFFERENCE', charIDToTypeID('Dfrn'));
-LifterBlendMode.EXCLUSION = new Enumerator('LifterBlendMode.EXCLUSION', charIDToTypeID('Xclu'));
-LifterBlendMode.SUBTRACT = new Enumerator('LifterBlendMode.SUBTRACT', stringIDToTypeID('blendSubtraction'));
-LifterBlendMode.DIVIDE = new Enumerator('LifterBlendMode.DIVIDE', stringIDToTypeID('blendDivide'));
-LifterBlendMode.HUE = new Enumerator('LifterBlendMode.HUE', charIDToTypeID('H   '));
-LifterBlendMode.SATURATION = new Enumerator('LifterBlendMode.SATURATION', charIDToTypeID('Strt'));
-LifterBlendMode.COLOR = new Enumerator('LifterBlendMode.COLOR', charIDToTypeID('Clr '));
-LifterBlendMode.LUMINOSITY = new Enumerator('LifterBlendMode.LUMINOSITY', charIDToTypeID('Lmns'));
+LifterBlendMode.PASSTHROUGH = new Enumerator('LifterBlendMode.PASSTHROUGH', s2id('passThrough'));
+LifterBlendMode.NORMAL = new Enumerator('LifterBlendMode.NORMAL', c2id('Nrml'));
+LifterBlendMode.DISSOLVE = new Enumerator('LifterBlendMode.DISSOLVE', c2id('Dslv'));
+LifterBlendMode.DARKEN = new Enumerator('LifterBlendMode.DARKEN', c2id('Drkn'));
+LifterBlendMode.MULTIPLY = new Enumerator('LifterBlendMode.MULTIPLY', c2id('Mltp'));
+LifterBlendMode.COLORBURN = new Enumerator('LifterBlendMode.COLORBURN', c2id('CBrn'));
+LifterBlendMode.LINEARBURN = new Enumerator('LifterBlendMode.LINEARBURN', s2id('linearBurn'));
+LifterBlendMode.DARKERCOLOR = new Enumerator('LifterBlendMode.DARKERCOLOR', s2id('darkerColor'));
+LifterBlendMode.LIGHTEN = new Enumerator('LifterBlendMode.LIGHTEN', c2id('Lghn'));
+LifterBlendMode.SCREEN = new Enumerator('LifterBlendMode.SCREEN', c2id('Scrn'));
+LifterBlendMode.COLORDODGE = new Enumerator('LifterBlendMode.COLORDODGE', c2id('CDdg'));
+LifterBlendMode.LINEARDODGE = new Enumerator('LifterBlendMode.LINEARDODGE', s2id('linearDodge'));
+LifterBlendMode.LIGHTERCOLOR = new Enumerator('LifterBlendMode.LIGHTERCOLOR', s2id('lighterColor'));
+LifterBlendMode.OVERLAY = new Enumerator('LifterBlendMode.OVERLAY', c2id('Ovrl'));
+LifterBlendMode.SOFTLIGHT = new Enumerator('LifterBlendMode.SOFTLIGHT', c2id('SftL'));
+LifterBlendMode.HARDLIGHT = new Enumerator('LifterBlendMode.HARDLIGHT', c2id('HrdL'));
+LifterBlendMode.VIVIDLIGHT = new Enumerator('LifterBlendMode.VIVIDLIGHT', s2id('vividLight'));
+LifterBlendMode.LINEARLIGHT = new Enumerator('LifterBlendMode.LINEARLIGHT', s2id('linearLight'));
+LifterBlendMode.PINLIGHT = new Enumerator('LifterBlendMode.PINLIGHT', s2id('pinLight'));
+LifterBlendMode.HARDMIX = new Enumerator('LifterBlendMode.HARDMIX', s2id('hardMix'));
+LifterBlendMode.DIFFERENCE = new Enumerator('LifterBlendMode.DIFFERENCE', c2id('Dfrn'));
+LifterBlendMode.EXCLUSION = new Enumerator('LifterBlendMode.EXCLUSION', c2id('Xclu'));
+LifterBlendMode.SUBTRACT = new Enumerator('LifterBlendMode.SUBTRACT', s2id('blendSubtraction'));
+LifterBlendMode.DIVIDE = new Enumerator('LifterBlendMode.DIVIDE', s2id('blendDivide'));
+LifterBlendMode.HUE = new Enumerator('LifterBlendMode.HUE', c2id('H   '));
+LifterBlendMode.SATURATION = new Enumerator('LifterBlendMode.SATURATION', c2id('Strt'));
+LifterBlendMode.COLOR = new Enumerator('LifterBlendMode.COLOR', c2id('Clr '));
+LifterBlendMode.LUMINOSITY = new Enumerator('LifterBlendMode.LUMINOSITY', c2id('Lmns'));
 
 /** Converts the passed BlendMode to a LifterBlendMode. */
 LifterBlendMode.fromBlendMode = function (blendMode) { return LifterBlendMode[String(blendMode).replace(/BlendMode\./, '')]; };
@@ -282,16 +291,13 @@ function _ensureLifterBlendMode(blendMode)
  * Enumerates apply image source channels.
  */
 var ApplyImageChannel = this.ApplyImageChannel = function ApplyImageChannel() { };
-ApplyImageChannel.RGB = new Enumerator('ApplyImageChannel.RGB', charIDToTypeID('RGB '));
-ApplyImageChannel.Red = new Enumerator('ApplyImageChannel.Red', charIDToTypeID('Rd  '));
-ApplyImageChannel.Green = new Enumerator('ApplyImageChannel.Green', charIDToTypeID('Grn '));
-ApplyImageChannel.Blue = new Enumerator('ApplyImageChannel.Blue', charIDToTypeID('Bl  '));
+ApplyImageChannel.RGB = new Enumerator('ApplyImageChannel.RGB', c2id('RGB '));
+ApplyImageChannel.Red = new Enumerator('ApplyImageChannel.Red', c2id('Rd  '));
+ApplyImageChannel.Green = new Enumerator('ApplyImageChannel.Green', c2id('Grn '));
+ApplyImageChannel.Blue = new Enumerator('ApplyImageChannel.Blue', c2id('Bl  '));
 
 
 // Global utilities
-/** Cached reference to DialogModes.NO. */
-var _dialogModesNo = DialogModes.NO;
-
 /** 
  * Gets the descriptor property identified by the specified key (encoded as typeId).
  * Type must be a valid DescValueType enumerator. If type is not provided it is
