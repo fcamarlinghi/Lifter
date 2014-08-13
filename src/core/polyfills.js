@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+var toString = {}.toString,
+    indexOf = ''.indexOf;
+
 // ECMA Language extensions
 /**
  * Executes the provided callback function once for each element present in
@@ -413,7 +416,7 @@ Object.keys = Object.keys || (function ()
 }());
 
 /**
- * creates a new function that, when called, has its this keyword set to the provided value, with a given
+ * Creates a new function that, when called, has its this keyword set to the provided value, with a given
  * sequence of arguments preceding any provided when the new function is called.
  * 
  * @param {Any} context     The value to be passed as the this parameter to the target function when
@@ -444,4 +447,187 @@ Function.prototype.bind = Function.prototype.bind || function ()
     noOp.prototype = this.prototype;
     bound.prototype = new noOp();
     return bound;
+};
+
+/**
+ * Determines whether the string begins with the characters of another string.
+ * 
+ * @param {String} search       The characters to be searched for at the start of this string.
+ * @param {Number} [position]   The position in this string at which to begin searching for; defaults to 0.
+ * 
+ * @return  {Boolean} True if the string begins with the passed string; otherwise, false.
+ */
+String.prototype.startsWith = String.prototype.startsWith || function (search) // [, position]
+{
+    /* http://mths.be/startswith v0.2.0 by @mathias */
+    if (this == null)
+        throw TypeError();
+
+    var string = String(this);
+
+    if (search && toString.call(search) == '[object RegExp]')
+        throw TypeError();
+
+    var stringLength = string.length;
+    var searchString = String(search);
+    var searchLength = searchString.length;
+    var position = arguments.length > 1 ? arguments[1] : undefined;
+
+    // `ToInteger`
+    var pos = position ? Number(position) : 0;
+    if (pos != pos)
+        pos = 0; // better `isNaN`
+
+    var start = Math.min(Math.max(pos, 0), stringLength);
+
+    // Avoid the `indexOf` call if no match is possible
+    if (searchLength + start > stringLength)
+        return false;
+
+    var index = -1;
+
+    while (++index < searchLength)
+    {
+        if (string.charCodeAt(start + index) != searchString.charCodeAt(index))
+            return false;
+    }
+
+    return true;
+};
+
+/**
+ * Determines whether the string contains the characters of another string.
+ * 
+ * @param {String} search       The characters to be searched for within this string.
+ * @param {Number} [position]   The position in this string at which to begin searching for; defaults to 0.
+ * 
+ * @return  {Boolean} True if the string contains the passed string; otherwise, false.
+ */
+String.prototype.contains = String.prototype.contains || function (search)
+{
+    /* http://mths.be/contains v0.2.0 by @mathias */
+    if (this == null)
+        throw TypeError();
+
+    var string = String(this);
+    if (search && toString.call(search) == '[object RegExp]')
+        throw TypeError();
+
+    var stringLength = string.length;
+    var searchString = String(search);
+    var searchLength = searchString.length;
+    var position = arguments.length > 1 ? arguments[1] : undefined;
+
+    // `ToInteger`
+    var pos = position ? Number(position) : 0;
+    if (pos != pos)
+        pos = 0; // better `isNaN`
+
+    var start = Math.min(Math.max(pos, 0), stringLength);
+
+    // Avoid the `indexOf` call if no match is possible
+    if (searchLength + start > stringLength)
+        return false;
+
+    return indexOf.call(string, searchString, pos) != -1;
+};
+
+/**
+ * Determines whether the string ends with the characters of another string.
+ * 
+ * @param {String} search       The characters to be searched for at the end of this string.
+ * @param {Number} [position]   The position in this string at which to begin searching for; defaults to this string's
+ *                              actual length, clamped within the range established by this string's length.
+ * 
+ * @return  {Boolean} True if the string ends with the passed string; otherwise, false.
+ */
+String.prototype.endsWith = String.prototype.endsWith || function (search)
+{
+    /* http://mths.be/endswith v0.2.0 by @mathias */
+    if (this == null)
+        throw TypeError();
+
+    var string = String(this);
+
+    if (search && toString.call(search) == '[object RegExp]')
+        throw TypeError();
+
+    var stringLength = string.length;
+    var searchString = String(search);
+    var searchLength = searchString.length;
+    var pos = stringLength;
+
+    if (arguments.length > 1)
+    {
+        var position = arguments[1];
+
+        if (position !== undefined)
+        {
+            // `ToInteger`
+            pos = position ? Number(position) : 0;
+
+            if (pos != pos)
+                pos = 0; // better `isNaN`
+        }
+    }
+
+    var end = Math.min(Math.max(pos, 0), stringLength);
+    var start = end - searchLength;
+
+    if (start < 0)
+        return false;
+
+    var index = -1;
+
+    while (++index < searchLength)
+    {
+        if (string.charCodeAt(start + index) != searchString.charCodeAt(index))
+            return false;
+    }
+
+    return true;
+};
+
+/**
+ * Constructs and returns a new string which contains the specified number of copies of
+ * the string on which it was called, concatenated together.
+ * 
+ * @param {Number} count    An integer between 0 and +Infinity, indicating the number of times to repeat
+ *                          the string in the newly-created string that is to be returned.
+ * 
+ * @return {String} The concatenated string.
+ */
+String.prototype.repeat = String.prototype.repeat || function (count)
+{
+    /* http://mths.be/repeat v0.2.0 by @mathias */
+    // Also see this http://stackoverflow.com/a/17800645 about string concatenation
+    if (this == null)
+        throw TypeError();
+
+    var string = String(this);
+
+    // `ToInteger`
+    var n = count ? Number(count) : 0;
+
+    if (n != n)
+        n = 0; // better `isNaN`
+
+    // Account for out-of-bounds indices
+    if (n < 0 || n == Infinity)
+        throw RangeError();
+
+    var result = '';
+
+    while (n)
+    {
+        if (n % 2 == 1)
+            result += string;
+
+        if (n > 1)
+            string += string;
+
+        n >>= 1;
+    }
+
+    return result;
 };
