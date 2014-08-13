@@ -33,7 +33,9 @@
     function _wrapSwitchActive(layerId, callback, context)
     {
         // Set active layer to layerId
-        if (layers.prop('layerId') !== layerId)
+        // If we do not have a valid layerId we assume we want to target
+        // the currently active layer
+        if (typeof layerId === 'number' && layers.prop('layerId') !== layerId)
             layers.stack.makeActive(layerId);
 
         // Execute code
@@ -1378,7 +1380,8 @@
             layers.makeLayerFromBackground();
 
         // Make sure target layer is active
-        layers.stack.makeActive(layerId);
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
 
         var ref = new ActionReference();
         ref.putEnumerated(c2id('Chnl'), c2id('Chnl'), c2id('Msk '));
@@ -1407,7 +1410,8 @@
             layers.makeLayerFromBackground();
 
         // Make sure target layer is active
-        layers.stack.makeActive(layerId);
+        if (typeof layerId === 'number')
+            layers.stack.makeActive(layerId);
 
         var ref = new ActionReference();
         ref.putClass(c2id('Path'));
