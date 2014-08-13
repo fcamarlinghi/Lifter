@@ -428,16 +428,14 @@
 
     /**
      * Closes the currently active document.
-     * @param {SaveOptions} [save] Specifies whether changes should be saved before closing, defaults to false.
+     * @param {Boolean} [save=false] Specifies whether changes should be saved before closing.
      * @return Chained reference to document utilities.
      */
     documents.close = function (save)
     {
         if (documents.count() > 0)
-        {
-            save || (save = SaveOptions.DONOTSAVECHANGES);
-            app.activeDocument.close(save);
-        }
+            app.activeDocument.close(!!save ? SaveOptions.SAVECHANGES : SaveOptions.DONOTSAVECHANGES);
+
         return documents;
     };
 
